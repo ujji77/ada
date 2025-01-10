@@ -1,6 +1,6 @@
 // src/components/layout/Layout.jsx
 import React, { useState } from 'react';
-import Sidebar from './sidebar';
+import Sidebar from './Sidebar';
 import TopNav from './TopNav';
 import MessageBox from '../shared/MessageBox';
 import DataVisualization from '../shared/DataVisualization';
