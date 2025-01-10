@@ -1,4 +1,3 @@
-// src/components/layout/Sidebar.jsx
 import React from 'react';
 import { Nav } from '@fluentui/react/lib/Nav';
 import { IconButton } from '@fluentui/react/lib/Button';
