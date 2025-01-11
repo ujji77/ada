@@ -137,8 +137,9 @@ const ScatterPlot = () => {
             label={{
                 value: 'Number of journals',
                 angle: -90,
-                position: 'left',
-                offset: 10
+                position: 'insideLeft',
+                offset: 0,
+                style: { textAnchor: 'middle' }
             }}
             />
           <Tooltip content={<CustomTooltip />} />

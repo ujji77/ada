@@ -38,6 +38,8 @@ const HistogramChart = () => {
 
   if (loading) return <div>Loading histogram data...</div>;
 
+  
+
   return (
     <div>
       <div style={{
@@ -59,23 +61,23 @@ const HistogramChart = () => {
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey="range"
-          scale="band"
           tickLine={false}
           tickSize={10}
+          label={{ value: 'Amount (ranges)', position: 'bottom', offset: 20, fontSize: 14, style: { textAnchor: 'middle' } }}
           fontSize={12}
         />
         <YAxis
           yAxisId="left"
           orientation="left"
           tickFormatter={(value) => `${value / 1000000}M`}
-          label={{ value: 'Amount', angle: -90, position: 'insideLeft', fontSize: 12 }}
+          label={{ value: 'Value', angle: -90, position: 'insideLeft', fontSize: 14, style: { textAnchor: 'middle' } }}
           fontSize={12}
         />
         <YAxis
           yAxisId="right"
           orientation="right"
           domain={[0, 'auto']}
-          label={{ value: 'Number of journals', angle: 90, position: 'insideRight', fontSize: 12 }}
+          label={{ value: 'Number of journals', angle: -90, position: 'insideRight', fontSize: 14, style: { textAnchor: 'middle' } }}
           fontSize={12}
         />
         <Tooltip />
