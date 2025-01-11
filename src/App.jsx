@@ -3,6 +3,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import AdaOne from './features/ada1';
+import AdaTwo from './features/ada2';
 import AdaSix from './features/ada6';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/ada1" replace />} />
         <Route path="/ada1" element={<AdaOne />} />
+        <Route path="/ada2" element={<AdaTwo />} />
         <Route path="/ada6" element={<AdaSix />} />
       </Routes>
     </MainLayout>

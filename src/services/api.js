@@ -137,6 +137,60 @@ async getADA1Scatter() {
     }
   },
 
+  async getADA2Main() {
+    try {
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1986598440`
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const text = await response.text();
+      const rows = text.split('\n');
+      
+      // Skip header row and process each data row
+      return rows.slice(1).map(row => {
+        // Handle quoted fields with commas
+        const fields = [];
+        let field = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+          const char = row[i];
+          
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            fields.push(field.trim());
+            field = '';
+          } else {
+            field += char;
+          }
+        }
+        // Push the last field
+        fields.push(field.trim());
+  
+        // Process the fields
+        const [debit_account, credit_account, account_combination, amount, journal_count] = fields;
+        return {
+          debit_account: debit_account.replace(/['"]+/g, '').trim(),
+          credit_account: credit_account.replace(/['"]+/g, '').trim(),
+          account_combination: account_combination.replace(/['"]+/g, '').trim(),
+          amount: parseFloat(amount.replace(/['"$,]+/g, '')),
+          journal_count: parseInt(journal_count.replace(/['"]+/g, '')),
+        };
+      }).filter(row => 
+        !isNaN(row.amount) && 
+        !isNaN(row.journal_count)
+      ); // Filter out any invalid rows
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+
   async getADA6Main() {
     try {
       const response = await fetch(
