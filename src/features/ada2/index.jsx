@@ -34,8 +34,6 @@ const AdaTwo = () => {
             alignItems: 'center', 
             justifyContent: 'center',
             color: '#666',
-            borderRadius: '8px',
-            border: '2px dashed #e0e0e0'
           }}>
         <AccountMatrix />
           </div>
