@@ -1,11 +1,30 @@
 // src/components/layout/MainLayout.jsx
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import TopNav from './TopNav';
+import AdaLayout from '../shared/AdaLayout';
+
+// Configuration for each ADA
+const adaConfigs = {
+  ada1: {
+    title: "Revenue to AR",
+    materialityAmount: "$550,000"
+  },
+  ada6: {
+    title: "Revenue to AR",
+    materialityAmount: "$550,000"
+  },
+  // Add more ADA configurations as needed
+};
 
 const MainLayout = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [activeTab, setActiveTab] = useState('ada1');
+  const location = useLocation();
+  
+  // Get the current ADA from the path
+  const currentAda = location.pathname.split('/')[1] || 'ada1';
+  const adaConfig = adaConfigs[currentAda] || adaConfigs.ada1;
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -14,8 +33,6 @@ const MainLayout = ({ children }) => {
         <Sidebar 
           isCollapsed={isSidebarCollapsed}
           onCollapse={setIsSidebarCollapsed}
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
         />
         <div style={{ 
           flex: 1, 
@@ -23,7 +40,12 @@ const MainLayout = ({ children }) => {
           backgroundColor: 'white',
           overflow: 'auto'
         }}>
-          {children}
+          <AdaLayout
+            title={adaConfig.title}
+            materialityAmount={adaConfig.materialityAmount}
+          >
+            {children}
+          </AdaLayout>
         </div>
       </div>
     </div>
