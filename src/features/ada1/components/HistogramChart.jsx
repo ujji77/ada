@@ -53,6 +53,7 @@ const HistogramChart = () => {
         width={600}
         height={400}
         data={data}
+        barCategoryGap={0}
         margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
       >
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -86,7 +87,6 @@ const HistogramChart = () => {
           dataKey="sum_amount"
           name="Sum of amount"
           fill="#E86C00"
-          barSize={'100%'}
         />
         <Line
           yAxisId="right"
