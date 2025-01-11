@@ -124,25 +124,27 @@ const AccountMatrix = () => {
   }, []);
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
-        marginBottom: '16px' 
+        marginBottom: '16px',
+        flexShrink: 0
       }}>
         <h3>Account Combination Matrix</h3>
         <button style={{ color: '#E86C00', border: 'none', background: 'none', cursor: 'pointer' }}>
           Clear filters
         </button>
       </div>
-      <div style={{ textAlign: 'center', marginBottom: '16px', color: '#666' }}>
+      <div style={{ textAlign: 'center', marginBottom: '16px', color: '#666', flexShrink: 0 }}>
         Credit Accounts
       </div>
       <div 
         className="ag-theme-alpine" 
         style={{ 
-          height: '600px',
+          height: '100%',
           width: '100%',
+          overflow: 'auto',
           '--ag-header-height': '120px',
           '--ag-row-height': '120px',
           '--ag-header-background-color': '#fff',
@@ -175,6 +177,7 @@ const AccountMatrix = () => {
           headerHeight={120}
           rowHeight={120}
           suppressHorizontalScroll={false}
+          domLayout='normal'
         />
       </div>
 
