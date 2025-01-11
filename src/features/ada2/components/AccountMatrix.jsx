@@ -75,14 +75,13 @@ const AccountMatrix = () => {
 
         const cols = [
           {
-            // headerName: 'Debit Accounts',
-            // field: 'debitAccount',
+            headerName: '',
+            field: 'debitAccount',
             pinned: 'left',
             cellClass: 'centered-cell',
             valueFormatter: params => `AR ${params.node.rowIndex + 1}`,
             minWidth: 60,
             maxWidth: 60,
-            headerClass: 'debit-account-header',
           },
           ...creditAccounts.map((credit, index) => ({
             headerName: `Rev ${index + 1}`,
@@ -127,6 +126,9 @@ const AccountMatrix = () => {
       <div className="matrix-header">
         <h3>Account Combination Matrix</h3>
         <button>Clear filters</button>
+      </div>
+      <div className="matrix-side-label">
+        Debit Accounts
       </div>
       <div className="matrix-subheader">
         Credit Accounts

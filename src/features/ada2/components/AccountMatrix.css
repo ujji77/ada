@@ -4,6 +4,18 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    margin-left: 32px;
+  }
+  
+  .matrix-side-label {
+    position: absolute;
+    left: -24px;
+    top: 50%;
+    transform: rotate(-90deg) translateX(-50%);
+    transform-origin: 0 0;
+    color: #666;
+    white-space: nowrap;
+    font-size: 16px;
   }
   
   .matrix-header {
@@ -27,14 +39,19 @@
     flex-shrink: 0;
   }
   
-  .matrix-side-label {
-    position: absolute;
-    left: -40px;
-    top: 50%;
-    transform: rotate(-90deg) translateX(50%);
-    transform-origin: left;
+  .ag-header-cell.debit-account-header {
+    padding: 8px;
+  }
+  
+  .ag-header-cell.debit-account-header .ag-header-cell-label {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    text-align: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #666;
-    white-space: nowrap;
   }
   
   .matrix-cell {
@@ -105,8 +122,8 @@
   
   /* AG Grid Overrides */
   .ag-theme-alpine {
-    --ag-header-height: 120px;
-    --ag-row-height: 120px;
+    --ag-header-height: 80px;
+    --ag-row-height: 80px;
     --ag-header-background-color: #fff;
     --ag-header-cell-hover-background-color: #fff;
     --ag-row-hover-color: transparent;
