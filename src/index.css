@@ -40,3 +40,35 @@ body {
 .ag-theme-alpine .ag-cell {
   font-size: 12px;
 }
+
+.ag-theme-alpine {
+  /* Row Styles */
+  --ag-row-border-color: #eaeaea;
+  --ag-row-height: 32px;
+  
+  /* Header Styles */
+  --ag-header-height: 32px;
+  --ag-header-foreground-color: #666;
+  --ag-header-background-color: #f8f8f8;
+  
+  /* Cell Styles */
+  --ag-cell-horizontal-border: none;
+}
+
+.ag-theme-alpine .ag-checkbox-input-wrapper {
+  width: 16px;
+  height: 16px;
+}
+
+.ag-theme-alpine .ag-header-cell {
+  border-bottom: 1px solid #eaeaea;
+}
+
+.ag-theme-alpine .ag-row {
+  border-bottom: 1px solid #eaeaea;
+}
+
+.ag-theme-alpine .ag-root {
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+}

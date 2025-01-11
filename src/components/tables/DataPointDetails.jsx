@@ -1,23 +1,42 @@
 // src/components/tables/DataPointDetails.jsx
 import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
+import { ModuleRegistry } from 'ag-grid-community';
 import { ClientSideRowModelModule } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { Copy } from 'lucide-react';  // Using lucide-react for icons
 import { api } from '../../services/api';
+
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const DataPointDetails = () => {
     const [rowData, setRowData] = useState([]);
-    const [gridApi, setGridApi] = useState(null);
 
-    // Column Definitions
+    // Custom Styles for AG Grid
+    const gridStyle = {
+        // Add custom style class
+        '--ag-font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif',
+        '--ag-font-size': '12px',
+        '--ag-cell-horizontal-padding': '12px',
+        '--ag-header-column-separator-display': 'none',
+        '--ag-header-background-color': '#f8f8f8',
+        '--ag-row-hover-color': '#f5f5f5',
+        '--ag-selected-row-background-color': 'rgba(232, 108, 0, 0.1)',
+        '--ag-checkbox-checked-color': '#E86C00',
+        '--ag-checkbox-unchecked-color': '#666',
+        '--ag-checkbox-background-color': 'white',
+        '--ag-checkbox-border-radius': '2px',
+    };
+
     const columnDefs = [
         {
-            headerName: '',  // Checkbox column
+            headerName: '',
             field: 'checkboxSelection',
-            checkboxSelection: true,
             headerCheckboxSelection: true,
-            width: 40
+            checkboxSelection: true,
+            width: 40,
+            headerCheckboxSelectionFilteredOnly: true,
         },
         {
             headerName: 'Amount',
@@ -30,34 +49,36 @@ const DataPointDetails = () => {
         {
             headerName: 'Journals',
             field: 'count',
-            width: 100
+            width: 100,
         },
         {
             headerName: 'Effective date',
             field: 'effective_date',
-            width: 150
+            width: 150,
         },
         {
-            headerName: '',  // Copy icon column
+            headerName: '',
             field: 'copy',
             width: 50,
-            cellRenderer: () => {
-                return '<i class="ms-Icon ms-Icon--Copy" style="color: #666; cursor: pointer;"></i>';
-            }
+            cellRenderer: () => (
+                <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    height: '100%' 
+                }}>
+                    <Copy size={16} color="#666" style={{ cursor: 'pointer' }} />
+                </div>
+            )
         }
     ];
 
-    // Grid Options
     const defaultColDef = {
         sortable: true,
-        resizable: true
+        resizable: true,
+        suppressMovable: true,
     };
 
-    const onGridReady = (params) => {
-        setGridApi(params.api);
-    };
-
-    // Fetch data on component mount
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -85,7 +106,8 @@ const DataPointDetails = () => {
                 className="ag-theme-alpine" 
                 style={{ 
                     height: '300px',
-                    width: '100%'
+                    width: '100%',
+                    ...gridStyle
                 }}
             >
                 <AgGridReact
@@ -96,7 +118,9 @@ const DataPointDetails = () => {
                     suppressRowClickSelection={true}
                     headerHeight={32}
                     rowHeight={32}
-                    onGridReady={onGridReady}
+                    suppressCellFocus={true}
+                    suppressRowHoverHighlight={false}
+                    enableCellTextSelection={true}
                 />
             </div>
         </div>
