@@ -1,5 +1,5 @@
-// src/features/ada1/components/ScatterChart.jsx
 import React, { useState, useEffect } from 'react';
+import ScaleToggleButton from '../../../components/shared/ScaleToggleButton';
 import {
   ScatterChart,
   Scatter,
@@ -33,6 +33,7 @@ const CustomTooltip = ({ active, payload }) => {
 const ScatterPlot = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [useLogScale, setUseLogScale] = useState(false);
   const [axisConfig, setAxisConfig] = useState({
     maxX: 0,
     maxY: 0,
@@ -44,31 +45,27 @@ const ScatterPlot = () => {
     const fetchData = async () => {
       try {
         const scatterData = await api.getADA1Scatter();
-        
-        // Transform data to use bucket average as x-coordinate
+
         const transformedData = scatterData.map(d => ({
           ...d,
           x: (d.bucket_start + d.bucket_end) / 2 // Use middle of bucket for x position
         }));
-        
+
         setData(transformedData);
-        
-        // Calculate axis configurations
+
         const maxBucketValue = Math.max(...scatterData.map(d => d.bucket_end));
         const maxCount = Math.max(...scatterData.map(d => d.count));
-        
-        // Calculate nice rounded numbers for axis limits
+
         const xLimit = Math.ceil(maxBucketValue / 100000) * 100000;
         const yLimit = Math.ceil(maxCount / 100) * 100;
-        
-        // Generate tick values
+
         const xTicks = Array.from(
-          { length: 5 }, 
+          { length: 5 },
           (_, i) => Math.round(xLimit / 4 * i)
         );
-        
+
         const yTicks = Array.from(
-          { length: 7 }, 
+          { length: 7 },
           (_, i) => Math.round(yLimit / 6 * i)
         );
 
@@ -88,48 +85,62 @@ const ScatterPlot = () => {
     fetchData();
   }, []);
 
+  const handleToggleScale = () => {
+    setUseLogScale(prev => !prev);
+  };
+
   if (loading) return <div>Loading distribution data...</div>;
 
   return (
     <div>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
         gap: '8px',
         marginBottom: '16px'
       }}>
         <h3 style={{ margin: 0 }}>Distribution of Amounts</h3>
         <i className="ms-Icon ms-Icon--Info" style={{ color: '#666' }} />
+        <div style={{ marginLeft: 'auto' }}>
+          <ScaleToggleButton useLogScale={useLogScale} handleToggleScale={handleToggleScale} />
+        </div>
       </div>
       <ResponsiveContainer width="100%" height={400}>
         <ScatterChart
           margin={{ top: 20, right: 20, bottom: 40, left: 40 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            dataKey="x" 
+          <XAxis
+            dataKey="x"
+            scale={useLogScale ? 'log' : 'linear'}
             type="number"
-            domain={[0, axisConfig.maxX]}
-            ticks={axisConfig.xTicks}
-            tickFormatter={(value) => `$${(value / 1000).toLocaleString()}k`}
-            label={{ 
-              value: 'Amount',
-              position: 'bottom',
-              offset: 20
+            domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxX]}
+            ticks={useLogScale ? undefined : axisConfig.xTicks}
+            tickFormatter={value =>
+                useLogScale ? value.toLocaleString() : `$${(value / 1000).toLocaleString()}k`
+            }
+            label={{
+                value: 'Amount',
+                position: 'bottom',
+                offset: 20
             }}
-          />
-          <YAxis 
+            />
+            <YAxis
             dataKey="count"
+            scale={useLogScale ? 'log' : 'linear'}
             type="number"
-            domain={[0, axisConfig.maxY]}
-            ticks={axisConfig.yTicks}
-            label={{ 
-              value: 'Number of journals',
-              angle: -90,
-              position: 'left',
-              offset: 10
+            domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxY]}
+            ticks={useLogScale ? undefined : axisConfig.yTicks}
+            tickFormatter={value =>
+                useLogScale ? value.toLocaleString() : value
+            }
+            label={{
+                value: 'Number of journals',
+                angle: -90,
+                position: 'left',
+                offset: 10
             }}
-          />
+            />
           <Tooltip content={<CustomTooltip />} />
           <Scatter
             data={data}
