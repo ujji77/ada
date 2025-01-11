@@ -6,7 +6,7 @@ import { ClientSideRowModelModule } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { Copy } from 'lucide-react';  // Using lucide-react for icons
-import { api } from '../../services/api';
+import { api } from '../../../services/api';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 

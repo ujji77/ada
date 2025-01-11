@@ -1,14 +1,14 @@
 // src/constants/routes.js
 export const routes = [
     {
-      id: 'dashboard',
-      icon: 'Dashboard',
-      label: 'Dashboard',
+      id: 'ada1',
+      label: 'ADA 1',
+      path: '/ada1'
     },
     {
-      id: 'analytics',
-      icon: 'Analytics',
-      label: 'Analytics',
+      id: 'ada2',
+      label: 'ADA 2',
+      path: '/ada2'
     },
-    // We'll add more routes later
+    // ... ADA 3-6
   ];

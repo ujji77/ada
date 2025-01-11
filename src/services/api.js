@@ -85,11 +85,40 @@ export const api = {
     }
   },
 
-  // Helper function to calculate date difference
-  calculateDateDifference(entryDate, accountingDate) {
-    const entry = new Date(entryDate);
-    const accounting = new Date(accountingDate);
-    const diffTime = Math.abs(accounting - entry);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // Add this method to your api.js
+async getADA1Scatter() {
+    try {
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1510336739`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const text = await response.text();
+      const rows = text.split('\n').slice(1); // Skip header row
+      return rows.map(row => {
+        const [bucket_start, bucket_end, sum_amount, count] = row.split(',');
+        return {
+          bucket_start: parseFloat(bucket_start.trim()),
+          bucket_end: parseFloat(bucket_end.trim()),
+          sum_amount: parseFloat(sum_amount.trim()),
+          count: parseInt(count.trim()),
+          range: `${parseFloat(bucket_start.trim()).toLocaleString()}-${parseFloat(bucket_end.trim()).toLocaleString()}`
+        };
+      });
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
   }
+
+//   // Helper function to calculate date difference
+//   calculateDateDifference(entryDate, accountingDate) {
+//     const entry = new Date(entryDate);
+//     const accounting = new Date(accountingDate);
+//     const diffTime = Math.abs(accounting - entry);
+//     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+//   }
 };
