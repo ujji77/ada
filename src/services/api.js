@@ -43,15 +43,38 @@ export const api = {
       }
 
       const text = await response.text();
-      const rows = text.split('\n').slice(1); // Skip header row
-      return rows.map(row => {
-        const [amount, count, effective_date] = row.split(',');
+      const rows = text.split('\n');
+      
+      // Skip header row and process each data row
+      return rows.slice(1).map(row => {
+        // Handle quoted fields with commas
+        const fields = [];
+        let field = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+          const char = row[i];
+          
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            fields.push(field.trim());
+            field = '';
+          } else {
+            field += char;
+          }
+        }
+        // Push the last field
+        fields.push(field.trim());
+
+        // Now process the fields
+        const [amount, count, effective_date] = fields;
         return {
-          amount: parseFloat(amount.trim()),
-          count: parseInt(count.trim()),
-          effective_date: effective_date.trim().replace(/['"]+/g, '')
+          amount: parseFloat(amount.replace(/['"]+/g, '')),
+          count: parseInt(count.replace(/['"]+/g, '')),
+          effective_date: effective_date.replace(/['"]+/g, '').trim()
         };
-      });
+      }).filter(row => !isNaN(row.amount) && !isNaN(row.count)); // Filter out any invalid rows
     } catch (error) {
       console.error('API Error:', error);
       throw error;

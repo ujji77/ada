@@ -27,6 +27,8 @@ const DataPointDetails = () => {
         '--ag-checkbox-unchecked-color': '#666',
         '--ag-checkbox-background-color': 'white',
         '--ag-checkbox-border-radius': '2px',
+        '--ag-checkbox-border-color': '#666',
+        '--ag-checkbox-indeterminate-color': '#E86C00',
     };
 
     const columnDefs = [
@@ -37,7 +39,12 @@ const DataPointDetails = () => {
             checkboxSelection: true,
             width: 40,
             headerCheckboxSelectionFilteredOnly: true,
-        },
+            showDisabledCheckboxes: true,
+            pinned: 'left',
+            lockPosition: true,
+            suppressMenu: true,
+            cellClass: 'checkbox-cell'
+            },
         {
             headerName: 'Amount',
             field: 'amount',
@@ -55,6 +62,9 @@ const DataPointDetails = () => {
             headerName: 'Effective date',
             field: 'effective_date',
             width: 150,
+            valueGetter: params => {
+                return params.data?.effective_date || '';
+            },
         },
         {
             headerName: '',
@@ -121,6 +131,9 @@ const DataPointDetails = () => {
                     suppressCellFocus={true}
                     suppressRowHoverHighlight={false}
                     enableCellTextSelection={true}
+                    // Add these additional props
+                    suppressRowDeselection={false}
+                    rowMultiSelectWithClick={true}
                 />
             </div>
         </div>
