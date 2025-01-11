@@ -1,14 +1,22 @@
 import React from 'react';
 import { Nav } from '@fluentui/react/lib/Nav';
 import { IconButton } from '@fluentui/react/lib/Button';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { routes } from '../../constants/routes';
 
-const Sidebar = ({ isCollapsed, onCollapse, activeTab, onTabChange }) => {
+const Sidebar = ({ isCollapsed, onCollapse }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get the active route id from the current path
+  const activeTab = routes.find(route => route.path === location.pathname)?.id || 'ada1';
+
   const navItems = routes.map(route => ({
     key: route.id,
     name: isCollapsed ? '' : route.label,
     iconProps: { iconName: route.icon },
-    onClick: () => onTabChange(route.id)
+    url: route.path,  // Add the URL property
+    onClick: () => navigate(route.path)  // Use navigate instead of onTabChange
   }));
 
   return (

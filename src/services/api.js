@@ -135,6 +135,63 @@ async getADA1Scatter() {
       console.error('API Error:', error);
       throw error;
     }
+  },
+
+  async getADA6Main() {
+    try {
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=920040546`
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const text = await response.text();
+      const rows = text.split('\n');
+      
+      // Skip header row and process each data row
+      return rows.slice(1).map(row => {
+        // Handle quoted fields with commas
+        const fields = [];
+        let field = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+          const char = row[i];
+          
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            fields.push(field.trim());
+            field = '';
+          } else {
+            field += char;
+          }
+        }
+        // Push the last field
+        fields.push(field.trim());
+  
+        // Process the fields
+        const [user, value, journals, smallest_amount, largest_amount, active_period] = fields;
+        return {
+          user: user.replace(/['"]+/g, '').trim(),
+          value: parseFloat(value.replace(/['"$,]+/g, '')),
+          journals: parseInt(journals.replace(/['"]+/g, '')),
+          smallest_amount: parseFloat(smallest_amount.replace(/['"$,]+/g, '')),
+          largest_amount: parseFloat(largest_amount.replace(/['"$,]+/g, '')),
+          active_period: active_period.replace(/['"]+/g, '').trim()
+        };
+      }).filter(row => 
+        !isNaN(row.value) && 
+        !isNaN(row.journals) && 
+        !isNaN(row.smallest_amount) && 
+        !isNaN(row.largest_amount)
+      ); // Filter out any invalid rows
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
   }
 
 //   // Helper function to calculate date difference
