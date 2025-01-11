@@ -20,10 +20,10 @@ const HistogramChart = () => {
     const fetchData = async () => {
       try {
         const histogramData = await api.getADA1Histogram();
-        // Add the range property for x-axis labels
         const formattedData = histogramData.map(item => ({
-          ...item,
-          range: `${item.bucket_start.toLocaleString()}-${item.bucket_end.toLocaleString()}`
+          range: `${item.bucket_start.toLocaleString()}-${item.bucket_end.toLocaleString()}`,
+          count: item.count,
+          sum_amount: item.sum_amount
         }));
         setData(formattedData);
       } catch (error) {
@@ -40,47 +40,53 @@ const HistogramChart = () => {
 
   return (
     <div>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '8px', 
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
         marginBottom: '16px'
       }}>
-        <h3 style={{ margin: 0 }}>Histogram</h3>
-        <i className="ms-Icon ms-Icon--Info" style={{ color: '#666' }} />
+        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Histogram</h3>
+        <i className="ms-Icon ms-Icon--Info" style={{ color: '#666', fontSize: '14px' }} />
       </div>
       <ComposedChart
         width={600}
         height={400}
         data={data}
-        margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+        margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
       >
         <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis 
-          dataKey="range" 
+        <XAxis
+          dataKey="range"
           scale="band"
           tickLine={false}
+          tickSize={10}
+          fontSize={12}
         />
-        <YAxis 
+        <YAxis
           yAxisId="left"
           orientation="left"
           tickFormatter={(value) => `${value / 1000000}M`}
-          label={{ value: 'Value', angle: -90, position: 'insideLeft' }}
+          label={{ value: 'Amount', angle: -90, position: 'insideLeft', fontSize: 12 }}
+          fontSize={12}
         />
-        <YAxis 
+        <YAxis
           yAxisId="right"
           orientation="right"
           domain={[0, 'auto']}
-          label={{ value: 'Number of journals', angle: 90, position: 'insideRight' }}
+          label={{ value: 'Number of journals', angle: 90, position: 'insideRight', fontSize: 12 }}
+          fontSize={12}
         />
         <Tooltip />
-        <Legend />
-        <Bar 
+        <Legend
+          wrapperStyle={{ fontSize: 12 }}
+        />
+        <Bar
           yAxisId="left"
-          dataKey="sum_amount" 
-          name="Sum of amount" 
+          dataKey="sum_amount"
+          name="Sum of amount"
           fill="#E86C00"
-          barSize={60}
+          barSize={'100%'}
         />
         <Line
           yAxisId="right"
