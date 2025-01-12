@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ScaleToggleButton from '../../../components/shared/ScaleToggleButton';
 import {
   ComposedChart,
   Bar,
@@ -16,6 +17,7 @@ import { abbreviateNumber } from '../../../utils/numberFormat';
 const LineBarChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [useLogScale, setUseLogScale] = useState(true); // Default to log scale
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,12 +52,27 @@ const LineBarChart = () => {
     fetchData();
   }, []);
 
+  const handleToggleScale = () => {
+    setUseLogScale(prev => !prev);
+  };
+
   if (loading) return <div className="p-4">Loading chart data...</div>;
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-4">
-        <h3 className="text-lg font-semibold m-0">Count and Total Value of Postings per User</h3>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: '16px'
+      }}>
+        <h3 style={{ margin: 0 }}>Count and Total Value of Postings per User</h3>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span>Journals selected (5)</span>
+          <button className="btn btn-primary" style={{ backgroundColor: '#E86C00', border: 'none' }}>Add</button>
+          <button className="btn btn-link" style={{ color: '#E86C00' }}>Clear all</button>
+          <ScaleToggleButton useLogScale={useLogScale} handleToggleScale={handleToggleScale} />
+        </div>
       </div>
       <div style={{ height: '400px' }}>
         <ResponsiveContainer width="100%" height="100%">
@@ -77,6 +94,8 @@ const LineBarChart = () => {
             <YAxis
               yAxisId="left"
               orientation="left"
+              scale={useLogScale ? 'log' : 'linear'}
+              domain={useLogScale ? [1, 'auto'] : [0, 'auto']}
               axisLine={false}
               tickLine={false}
               tickFormatter={(value) => `$${abbreviateNumber(value)}`}
@@ -90,6 +109,8 @@ const LineBarChart = () => {
             <YAxis
               yAxisId="right"
               orientation="right"
+              scale={useLogScale ? 'log' : 'linear'}
+              domain={useLogScale ? [1, 'auto'] : [0, 'auto']}
               axisLine={false}
               tickLine={false}
               tickFormatter={abbreviateNumber}
