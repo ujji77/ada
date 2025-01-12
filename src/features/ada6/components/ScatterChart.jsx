@@ -162,7 +162,7 @@ const ScatterPlot = () => {
           <Tooltip content={<CustomTooltip />} />
           <Scatter
             data={data}
-            fill="#E86C00"
+            fill="#C84C0C"
             shape="circle"
             r={4}
           />

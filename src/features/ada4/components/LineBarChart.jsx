@@ -69,8 +69,8 @@ const LineBarChart = () => {
         <h3 style={{ margin: 0 }}>Count and Total Value of Postings per User</h3>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>Journals selected (5)</span>
-          <button className="btn btn-primary" style={{ backgroundColor: '#E86C00', border: 'none' }}>Add</button>
-          <button className="btn btn-link" style={{ color: '#E86C00' }}>Clear all</button>
+          <button className="btn btn-primary" style={{ backgroundColor: '#C84C0C', border: 'none' }}>Add</button>
+          <button className="btn btn-link" style={{ color: '#C84C0C' }}>Clear all</button>
           <ScaleToggleButton useLogScale={useLogScale} handleToggleScale={handleToggleScale} />
         </div>
       </div>
@@ -134,7 +134,7 @@ const LineBarChart = () => {
               yAxisId="left"
               dataKey="value"
               name="Sum of amount"
-              fill="#E86C00"
+              fill="#C84C0C"
               radius={[4, 4, 0, 0]}
             />
             <Line

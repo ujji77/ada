@@ -5,7 +5,7 @@ const ScaleToggleButton = ({ useLogScale, handleToggleScale }) => {
     <div
       style={{
         display: 'flex',
-        border: '2px solid #E86C00',
+        border: '2px solid #C84C0C',
         borderRadius: '4px',
         overflow: 'hidden',
         cursor: 'pointer',
@@ -18,7 +18,7 @@ const ScaleToggleButton = ({ useLogScale, handleToggleScale }) => {
           flex: 1,
           textAlign: 'center',
           padding: '6px 6px',
-          backgroundColor: useLogScale ? '#E86C00' : 'white',
+          backgroundColor: useLogScale ? '#C84C0C' : 'white',
           color: useLogScale ? 'white' : '#333',
           transition: 'background-color 0.3s, color 0.3s',
           fontSize: '12px',
@@ -31,7 +31,7 @@ const ScaleToggleButton = ({ useLogScale, handleToggleScale }) => {
           flex: 1,
           textAlign: 'center',
           padding: '6px 6px',
-          backgroundColor: useLogScale ? 'white' : '#E86C00',
+          backgroundColor: useLogScale ? 'white' : '#C84C0C',
           color: useLogScale ? '#333' : 'white',
           transition: 'background-color 0.3s, color 0.3s',
           fontSize: '12px',

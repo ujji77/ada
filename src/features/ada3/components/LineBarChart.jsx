@@ -28,7 +28,7 @@ const LineBarChart = () => {
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip />
           <Legend />
-          <Line yAxisId="left" type="monotone" dataKey="value" name="Value" stroke="#E86C00" />
+          <Line yAxisId="left" type="monotone" dataKey="value" name="Value" stroke="#C84C0C" />
           <Bar yAxisId="right" dataKey="journals" name="Journals" fill="#FFB100" />
         </LineChart>
       </ResponsiveContainer>

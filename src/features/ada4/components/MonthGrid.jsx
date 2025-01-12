@@ -36,7 +36,7 @@ const MonthGrid = () => {
 
   const buttonStyle = {
     aspectRatio: '1',
-    backgroundColor: '#E86C00',
+    backgroundColor: '#C84C0C',
     border: 'none',
     borderRadius: '8px',
     color: 'white',
@@ -79,14 +79,14 @@ const MonthGrid = () => {
             onClick={() => toggleMonth(month)}
             style={{
               ...buttonStyle,
-              backgroundColor: selectedMonths.has(month) ? '#d56200' : '#E86C00',
+              backgroundColor: selectedMonths.has(month) ? '#d56200' : '#C84C0C',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#d56200';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 
-                selectedMonths.has(month) ? '#d56200' : '#E86C00';
+                selectedMonths.has(month) ? '#d56200' : '#C84C0C';
             }}
           >
             {month}

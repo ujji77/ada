@@ -75,7 +75,7 @@ const FilterBarChart = () => {
         <Bar
           dataKey="entry_date_occurrences"
           name="Entry Date Occurrences"
-          fill="#E86C00"
+          fill="#C84C0C"
           width={100}
           radius={[4, 4, 0, 0]}
         />

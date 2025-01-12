@@ -95,7 +95,7 @@ const HistogramChart = () => {
           yAxisId="left"
           dataKey="sum_amount"
           name="Sum of amount"
-          fill="#E86C00"
+          fill="#C84C0C"
         />
         <Line
           yAxisId="right"

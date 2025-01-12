@@ -12,7 +12,7 @@ const TopNav = () => {
     {
       key: 'outliers',
       text: 'Outliers',
-      buttonStyles: { root: { borderColor: '#E86C00', color: '#E86C00' } }
+      buttonStyles: { root: { borderColor: '#C84C0C', color: '#C84C0C' } }
     }
   ];
 

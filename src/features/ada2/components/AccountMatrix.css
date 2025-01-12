@@ -26,7 +26,7 @@
   }
   
   .matrix-header button {
-    color: #E86C00;
+    color: #C84C0C;
     border: none;
     background: none;
     cursor: pointer;
@@ -74,14 +74,14 @@
   }
   
   .matrix-cell:hover .cell-content {
-    border-color: #E86C00;
+    border-color: #C84C0C;
     border-width: 2px;
     box-shadow: 0 0 8px rgba(232, 108, 0, 0.3);
   }
   
   .matrix-cell.selected .cell-content {
-    background-color: #E86C00;
-    border-color: #E86C00;
+    background-color: #C84C0C;
+    border-color: #C84C0C;
     color: white;
   }
   

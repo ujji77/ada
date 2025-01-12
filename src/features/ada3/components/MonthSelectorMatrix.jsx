@@ -36,7 +36,7 @@ const MonthSelectorMatrix = () => {
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            backgroundColor: '#f5f5f5',
+            backgroundColor: '#C84C0C',
             transition: 'background-color 0.3s'
           }}
         >

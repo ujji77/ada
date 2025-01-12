@@ -1,47 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
-import { Icon } from '@fluentui/react/lib/Icon';
-import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { api } from '../../../services/api';
-import './AccountMatrix.css';
+import _ from 'lodash';
+import './UserActivityTiles.css'
 
-initializeIcons();
-
-const MatrixCell = (props) => {
-  const formatAmount = (amount) => {
-    return `${(amount / 1000000).toFixed(1)}M`;
-  };
-
-  const formatCount = (count) => {
-    if (count >= 1000000) return `${(count/1000000).toFixed(1)}m`;
-    if (count >= 1000) return `${(count/1000).toFixed(1)}k`;
-    return count.toString();
-  };
-
+const ActivityCell = (props) => {
   if (!props.value) return null;
 
-  const { debitAccountName, creditAccountName } = props.value;
-
+  const { amount, percentage } = props.value;
+  
   return (
-    <div 
-      className={`matrix-cell ${props.selected ? 'selected' : ''}`}
-      title={`
-        ${debitAccountName} × ${creditAccountName}
-        Amount: $${props.value.amount.toLocaleString()}
-        Journals: ${props.value.journalCount.toLocaleString()}
-      `}
-    >
-      <div className="cell-content">
-        <div className="cell-amount">
-          {formatAmount(props.value.amount)}
-        </div>
-        <div className="cell-stats">
-          <Icon iconName="AccountActivity" style={{ fontSize: 12 }} />
-          <span>{formatCount(props.value.journalCount)}</span>
-        </div>
-      </div>
+    <div className="activity-cell">
+      <div className="amount">${amount.toLocaleString()}</div>
+      <div 
+        className="activity-bar" 
+        style={{ width: `${percentage}%` }}
+      />
     </div>
   );
 };
@@ -51,58 +27,69 @@ const UserActivityTiles = () => {
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const defaultColDef = {
-    sortable: false,
-    resizable: false,
-    suppressMovable: true,
-    flex: 1,
-    minWidth: 90,
-    maxWidth: 90,
-    cellStyle: { 
-      padding: '2px',
-      border: 'none' 
-    },
-    headerClass: 'centered-header'
+  // Calculate percentage of total for each user's daily amount
+  const calculatePercentages = (data) => {
+    // Group by user_name to get totals
+    const userTotals = {};
+    data.forEach(item => {
+      if (!userTotals[item.user_name]) {
+        userTotals[item.user_name] = 0;
+      }
+      userTotals[item.user_name] += item.volume;
+    });
+
+    // Add percentage to each record
+    return data.map(item => ({
+      ...item,
+      percentage: (item.volume / userTotals[item.user_name]) * 100
+    }));
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawData = await api.getADA2Main();
+        const rawData = await api.getADA5AMain();
         
-        const debitAccounts = [...new Set(rawData.map(item => item.debit_account))];
-        const creditAccounts = [...new Set(rawData.map(item => item.credit_account))];
+        // Filter out summary rows and get unique users
+        const detailData = rawData.filter(row => !row.isGroup);
+        const users = _.uniq(detailData.map(item => item.user_name));
+        
+        // Calculate percentages
+        const dataWithPercentages = calculatePercentages(detailData);
 
+        // Create column definitions
         const cols = [
           {
             headerName: '',
-            field: 'debitAccount',
+            field: 'day',
             pinned: 'left',
-            cellClass: 'centered-cell',
-            valueFormatter: params => `AR ${params.node.rowIndex + 1}`,
-            minWidth: 60,
-            maxWidth: 60,
+            width: 100,
+            cellStyle: { 
+              display: 'flex',
+              alignItems: 'center'
+            }
           },
-          ...creditAccounts.map((credit, index) => ({
-            headerName: `Rev ${index + 1}`,
-            field: credit,
-            cellRenderer: MatrixCell
+          ...users.map(user => ({
+            headerName: user,
+            field: user,
+            cellRenderer: ActivityCell,
+            width: 150
           }))
         ];
 
-        const rows = debitAccounts.map(debit => {
-          const row = { debitAccount: debit };
-          creditAccounts.forEach(credit => {
-            const match = rawData.find(item => 
-              item.debit_account === debit && 
-              item.credit_account === credit
+        // Create row data
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const rows = days.map(day => {
+          const row = { day };
+          users.forEach(user => {
+            const userDay = dataWithPercentages.find(item => 
+              item.day === day && 
+              item.user_name === user
             );
-            if (match) {
-              row[credit] = {
-                amount: match.amount,
-                journalCount: match.journal_count,
-                debitAccountName: match.debit_account_name || debit,
-                creditAccountName: match.credit_account_name || credit
+            if (userDay) {
+              row[user] = {
+                amount: userDay.volume,
+                percentage: userDay.percentage
               };
             }
           });
@@ -113,7 +100,7 @@ const UserActivityTiles = () => {
         setRowData(rows);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching matrix data:', error);
+        console.error('Error fetching activity data:', error);
         setLoading(false);
       }
     };
@@ -121,25 +108,34 @@ const UserActivityTiles = () => {
     fetchData();
   }, []);
 
-  return (
-    <div className="account-matrix-container">
-      <div className="matrix-header">
-        <h3>Account Combination Matrix</h3>
-        <button>Clear filters</button>
-      </div>
-      <div className="matrix-side-label">
-        Debit Accounts
-      </div>
-      <div className="matrix-subheader">
-        Credit Accounts
-      </div>
+  const defaultColDef = {
+    sortable: false,
+    resizable: false,
+    suppressMovable: true,
+    cellStyle: { padding: 0 }
+  };
 
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div className="user-activity-container">
+      <div className="activity-header">
+        <h3>Count and Total Value of Postings per User</h3>
+        <div className="header-actions">
+          <span>Journals selected (0)</span>
+          <button className="add-button">Add</button>
+          <button className="clear-button">Clear all</button>
+          <div className="sort-buttons">
+            <button className="active">By value</button>
+            <button>By journal count</button>
+          </div>
+        </div>
+      </div>
       <div 
         className="ag-theme-alpine" 
         style={{ 
-          height: '100%',
-          width: '100%',
-          overflow: 'auto'
+          height: 'calc(100vh - 200px)',
+          width: '100%'
         }}
       >
         <AgGridReact
@@ -148,9 +144,8 @@ const UserActivityTiles = () => {
           defaultColDef={defaultColDef}
           suppressRowHoverHighlight={true}
           suppressCellSelection={true}
-          headerHeight={80}
+          headerHeight={100}
           rowHeight={80}
-          suppressHorizontalScroll={false}
           domLayout='normal'
         />
       </div>

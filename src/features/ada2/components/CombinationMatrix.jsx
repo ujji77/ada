@@ -174,7 +174,7 @@ const AccountMatrix = () => {
         marginBottom: '16px' 
       }}>
         <h3>Account Combination Matrix</h3>
-        <button style={{ color: '#E86C00', border: 'none', background: 'none', cursor: 'pointer' }}>
+        <button style={{ color: '#C84C0C', border: 'none', background: 'none', cursor: 'pointer' }}>
           Clear filters
         </button>
       </div>
@@ -229,7 +229,7 @@ const AccountMatrix = () => {
 
       <style>{`
         .matrix-cell:hover .cell-rect {
-          stroke: #E86C00;
+          stroke: #C84C0C;
           stroke-width: 2;
           filter: drop-shadow(0px 0px 8px rgba(232, 108, 0, 0.3));
           transition: all 0.2s ease;
