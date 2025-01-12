@@ -359,6 +359,60 @@ async getADA1Scatter() {
     }
   },
 
+  async getADA5AMain() {
+    try {
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1670077892`
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const text = await response.text();
+      const rows = text.split('\n');
+      
+      // Skip header row and process each data row
+      return rows.slice(1).map(row => {
+        // Handle quoted fields with commas
+        const fields = [];
+        let field = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+          const char = row[i];
+          
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            fields.push(field.trim());
+            field = '';
+          } else {
+            field += char;
+          }
+        }
+        // Push the last field
+        fields.push(field.trim());
+  
+        // Process the fields - now including isSummary
+        const [isSummary, day, user_name, journal_count, volume] = fields;
+        return {
+          isGroup: isSummary.replace(/['"]+/g, '').trim().toUpperCase() === 'TRUE',
+          day: day.replace(/['"]+/g, '').trim(),
+          user_name: user_name.replace(/['"]+/g, '').trim(),
+          journal_count: parseInt(journal_count.replace(/['"]+/g, '')),
+          volume: parseFloat(volume.replace(/['"$,]+/g, ''))
+        };
+      }).filter(row => 
+        !isNaN(row.journal_count) && 
+        !isNaN(row.volume)
+      ); // Filter out any invalid rows
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+
   async getADA6Main() {
     try {
       const response = await fetch(
