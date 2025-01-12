@@ -1,0 +1,106 @@
+.calendar-heatmap {
+    padding: 24px;
+    background: white;
+    border-radius: 8px;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .legend span {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .legend-items {
+    display: flex;
+    gap: 4px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .color-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+  }
+  
+  .legend-item span {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .chart {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .day-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 20px; /* Align with grid accounting for month labels */
+  }
+  
+  .day-label {
+    height: 10px;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .months-grid {
+    display: flex;
+    gap: 4px;
+    flex-grow: 1;
+  }
+  
+  .month-column {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  
+  .month-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .days-column {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .day-cell {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .day-cell:hover {
+    transform: scale(1.2);
+  }

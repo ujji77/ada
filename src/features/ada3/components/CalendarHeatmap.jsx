@@ -1,43 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { ResponsiveContainer, ScatterChart, XAxis, YAxis, ZAxis, Tooltip, Scatter, CartesianGrid } from 'recharts';
-import _ from 'lodash';
+import { ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, Tooltip } from 'recharts';
 import { api } from '../../../services/api';
 
 const CalendarHeatmap = () => {
   const [data, setData] = useState([]);
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const chartData = await api.getADA3Main();
+        const response = await api.getADA3Main();
         
-        // Log a sample of the raw data to inspect structure
-        console.log('Sample raw data:', chartData.slice(0, 5));
+        // Transform API data to match the scatter plot format
+        const transformedData = response.map(item => ({
+          date: item.entry_date,
+          week: Math.floor((new Date(item.entry_date)).getDate() / 7),
+          day: getDayNumber(item.day), // Convert day name to number
+          active_users: item.active_users,
+          month: item.month,
+          year: item.year,
+          value: item.value,
+          journals: item.journals
+        }));
 
-        if (chartData && chartData.length > 0) {
-          const transformedData = chartData.map(item => {
-            const dataPoint = {
-              x: parseInt(item.month),
-              y: parseInt(item.day),
-              active_users: parseInt(item.active_users),
-              month: parseInt(item.month),
-              day: parseInt(item.day),
-              year: parseInt(item.year),
-            };
-            return dataPoint;
-          });
-
-          // Log a sample of transformed data to verify structure
-          console.log('Sample transformed data:', transformedData.slice(0, 5));
-          setData(transformedData);
-        }
+        setData(transformedData);
       } catch (error) {
-        console.error('Error fetching chart data:', error);
+        console.error('Error fetching data:', error);
       }
     };
+
     fetchData();
   }, []);
+
+  // Convert day names to numbers (0-6)
+  const getDayNumber = (dayName) => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return days.findIndex(day => dayName.startsWith(day));
+  };
 
   const getColor = (value) => {
     if (!value) return '#ebedf0';
@@ -49,88 +47,107 @@ const CalendarHeatmap = () => {
   };
 
   const CustomTooltip = ({ active, payload }) => {
-    if (!active || !payload || !payload[0]) return null;
-    const data = payload[0].payload;
+    if (!active || !payload?.[0]) return null;
+    
+    const { date, active_users, journals } = payload[0].payload;
     return (
-      <div className="bg-white p-2 border border-gray-200 rounded shadow-sm">
-        <p className="text-sm text-gray-600">
-          {months[data.month - 1]} {data.day}, {data.year}
+      <div style={{
+        backgroundColor: 'white',
+        padding: '8px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        <p style={{ margin: '0', fontSize: '12px', color: '#666' }}>{date}</p>
+        <p style={{ margin: '4px 0 0', fontSize: '12px', fontWeight: '500' }}>
+          {active_users} active users
         </p>
-        <p className="text-sm font-semibold">
-          {data.active_users || 0} active users
+        <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#666' }}>
+          {journals} journals
         </p>
       </div>
     );
   };
 
   return (
-    <div className="w-full min-h-[400px] p-4 border border-gray-200">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold">Active Users by Date</h2>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">Less</span>
-          {[0, 9, 19, 29, 39].map((threshold, i) => (
-            <div
-              key={i}
-              className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: getColor(threshold + 1) }}
-            />
+    <div style={{ padding: '24px' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        marginBottom: '24px'
+      }}>
+        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
+          Active Users by Date
+        </h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '12px', color: '#666' }}>Active users</span>
+          {[
+            { label: '0', color: '#ebedf0' },
+            { label: '1-9', color: '#ffebe6' },
+            { label: '10-19', color: '#ffb4a1' },
+            { label: '20-29', color: '#ff8b72' },
+            { label: '30-39', color: '#ff6b4f' },
+            { label: '40+', color: '#ff4d1f' }
+          ].map((item, index) => (
+            <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <div style={{
+                width: '12px',
+                height: '12px',
+                backgroundColor: item.color,
+                borderRadius: '2px'
+              }} />
+              <span style={{ fontSize: '12px', color: '#666' }}>{item.label}</span>
+            </div>
           ))}
-          <span className="text-sm text-gray-500">More</span>
         </div>
       </div>
-      <div className="w-full h-[300px] border border-gray-100">
-        <ResponsiveContainer width="100%" height={300}>
+
+      <div style={{ height: '200px' }}>
+        <ResponsiveContainer width="100%" height="100%">
           <ScatterChart
             margin={{ top: 20, right: 20, bottom: 20, left: 40 }}
           >
-            <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
-            <XAxis 
+            <XAxis
               type="number"
-              dataKey="x"
-              domain={[0.5, 12.5]}
-              tickFormatter={(value) => months[value - 1]}
+              dataKey="week"
+              domain={[0, 52]}
+              tickFormatter={() => ''}
+              tick={false}
               axisLine={false}
-              tickLine={false}
-              interval={0}
-              tick={{ fontSize: 12, fill: '#666' }}
             />
             <YAxis
               type="number"
-              dataKey="y"
-              domain={[0.5, 31.5]}
+              dataKey="day"
+              domain={[0, 6]}
+              tickFormatter={(day) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]}
               tick={{ fontSize: 12, fill: '#666' }}
               axisLine={false}
               tickLine={false}
               reversed
-              ticks={[1, 5, 10, 15, 20, 25, 30]}
             />
-            <ZAxis type="number" range={[50, 50]} />
             <Tooltip content={<CustomTooltip />} />
             <Scatter
               data={data}
               shape={(props) => {
-                if (!props.cx || !props.cy) {
-                  console.log('Missing coordinates for point:', props);
-                  return null;
-                }
+                const { cx, cy, payload } = props;
+                if (!cx || !cy || !payload) return null;
+                
                 return (
-                  <circle
-                    cx={props.cx}
-                    cy={props.cy}
-                    r={8}
-                    fill={getColor(props.payload.active_users)}
-                    className="transition-colors duration-200"
+                  <rect
+                    x={cx - 8}
+                    y={cy - 8}
+                    width={16}
+                    height={16}
+                    fill={getColor(payload.active_users)}
+                    rx={2}
+                    style={{ transition: 'all 0.2s ease' }}
                   />
                 );
               }}
             />
           </ScatterChart>
         </ResponsiveContainer>
-      </div>
-      {/* Debug info */}
-      <div className="mt-2 text-xs text-gray-500">
-        Data points: {data.length}
       </div>
     </div>
   );
