@@ -11,6 +11,22 @@ import {
 } from 'recharts';
 import { api } from '../../../services/api';
 
+const abbreviateNumber = (value) => {
+    if (value === 0) return '0';
+    
+    const suffixes = ['', 'k', 'm', 'b'];
+    const magnitude = Math.floor(Math.log10(Math.abs(value)) / 3);
+    const scaledValue = value / Math.pow(10, magnitude * 3);
+    const suffix = suffixes[magnitude];
+    
+    // Round to at most 3 significant digits
+    const rounded = scaledValue.toPrecision(3);
+    // Remove trailing zeros and decimal point if whole number
+    const formatted = parseFloat(rounded).toString();
+    
+    return formatted + suffix;
+  };
+
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
@@ -123,7 +139,7 @@ const ScatterPlot = () => {
             type="number"
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxX]}
             ticks={useLogScale ? undefined : axisConfig.xTicks}
-            tickFormatter={value => `$${(value / 1000).toLocaleString()}k`}
+            tickFormatter={value => `$${abbreviateNumber(value)}`}
             tickLine={false}
             tickSize={10}
             axisLine={false}
@@ -139,7 +155,7 @@ const ScatterPlot = () => {
             type="number"
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxY]}
             ticks={useLogScale ? undefined : axisConfig.yTicks}
-            tickFormatter={value => value.toLocaleString()}
+            tickFormatter={value => abbreviateNumber(value)}
             tickLine={false}
             tickSize={10}
             axisLine={false}
@@ -147,7 +163,7 @@ const ScatterPlot = () => {
               value: 'Number of Journals',
               angle: -90,
               position: 'insideLeft',
-              offset: 10,
+              offset: -10,
               style: { textAnchor: 'middle' }
             }}
           />
