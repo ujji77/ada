@@ -16,6 +16,11 @@ export const routes = [
       path: '/ada3'
     },
     {
+      id: 'ada4',
+      label: 'ADA 4',
+      path: '/ada4'
+    },
+    {
       id: 'ada6',
       label: 'ADA 6',
       path: '/ada6'

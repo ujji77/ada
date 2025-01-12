@@ -5,6 +5,7 @@ import MainLayout from './components/layout/MainLayout';
 import AdaOne from './features/ada1';
 import AdaTwo from './features/ada2';
 import AdaThree from './features/ada3';
+import AdaFour from './features/ada4';
 import AdaSix from './features/ada6';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/ada1" element={<AdaOne />} />
         <Route path="/ada2" element={<AdaTwo />} />
         <Route path="/ada3" element={<AdaThree />} />
+        <Route path="/ada4" element={<AdaFour />} />
         <Route path="/ada6" element={<AdaSix />} />
       </Routes>
     </MainLayout>

@@ -305,6 +305,60 @@ async getADA1Scatter() {
     }
   },
 
+  async getADA4Main() {
+    try {
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1356461757`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const text = await response.text();
+      const rows = text.split('\n');
+      
+      // Skip header row and process each data row
+      return rows.slice(1).map(row => {
+        const fields = [];
+        let field = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+          const char = row[i];
+          
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            fields.push(field.trim());
+            field = '';
+          } else {
+            field += char;
+          }
+        }
+        // Push the last field
+        fields.push(field.trim());
+
+        // Process the fields with new schema
+        const [days, month, value, journals] = fields;
+        return {
+          days: parseInt(days.replace(/['"]+/g, '')),
+          month: month.replace(/['"]+/g, '').trim(),
+          value: parseFloat(value.replace(/['"$,]+/g, '')),
+          journals: parseInt(journals.replace(/['"]+/g, '')),
+        };
+      }).filter(row => 
+        !isNaN(row.days) &&
+        row.month && 
+        !isNaN(row.value) && 
+        !isNaN(row.journals)
+      ); // Filter out any invalid rows
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+
   async getADA6Main() {
     try {
       const response = await fetch(
