@@ -11,6 +11,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { api } from '../../../services/api';
+import { abbreviateNumber } from '../../../utils/numberFormat';
 
 const LineBarChart = () => {
   const [data, setData] = useState([]);
@@ -51,17 +52,6 @@ const LineBarChart = () => {
 
   if (loading) return <div className="p-4">Loading chart data...</div>;
 
-  const formatYAxisValue = (value) => {
-    if (value === 0) return '0';
-    if (Math.abs(value) >= 1000000) {
-      return `${(value / 1000000).toFixed(1)}M`;
-    }
-    if (Math.abs(value) >= 1000) {
-      return `${(value / 1000).toFixed(1)}k`;
-    }
-    return value.toFixed(0);
-  };
-
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
@@ -89,7 +79,7 @@ const LineBarChart = () => {
               orientation="left"
               axisLine={false}
               tickLine={false}
-              tickFormatter={formatYAxisValue}
+              tickFormatter={(value) => `$${abbreviateNumber(value)}`}
               label={{ 
                 value: 'Value',
                 angle: -90,
@@ -102,6 +92,7 @@ const LineBarChart = () => {
               orientation="right"
               axisLine={false}
               tickLine={false}
+              tickFormatter={abbreviateNumber}
               label={{ 
                 value: 'Number of Journals',
                 angle: 90,
@@ -109,7 +100,14 @@ const LineBarChart = () => {
                 offset: 10
               }}
             />
-            <Tooltip />
+            <Tooltip 
+              formatter={(value, name) => {
+                if (name === "Sum of amount") {
+                  return [`$${abbreviateNumber(value)}`, name];
+                }
+                return [abbreviateNumber(value), name];
+              }}
+            />
             <Legend />
             <Bar
               yAxisId="left"
