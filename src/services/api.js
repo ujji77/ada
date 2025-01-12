@@ -191,6 +191,110 @@ async getADA1Scatter() {
     }
   },
 
+  async getADA3Main() {
+    try {
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1521024180`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const text = await response.text();
+      const rows = text.split('\n');
+      
+      // Skip header row and process each data row
+      return rows.slice(1).map(row => {
+        // Handle quoted fields with commas
+        const fields = [];
+        let field = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+          const char = row[i];
+          
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            fields.push(field.trim());
+            field = '';
+          } else {
+            field += char;
+          }
+        }
+        // Push the last field
+        fields.push(field.trim());
+
+        // Process the fields
+        const [entry_date, active_users, value, journals] = fields;
+        return {
+          entry_date: entry_date.replace(/['"]+/g, '').trim(),
+          active_users: parseInt(active_users.replace(/['"]+/g, '')),
+          value: parseFloat(value.replace(/['"$,]+/g, '')),
+          journals: parseInt(journals.replace(/['"]+/g, '')),
+        };
+      }).filter(row => 
+        !isNaN(row.active_users) && 
+        !isNaN(row.value) && 
+        !isNaN(row.journals)
+      ); // Filter out any invalid rows
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+
+  async getADA3Filter() {
+    try {
+      const response = await fetch(
+        `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=203428939`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const text = await response.text();
+      const rows = text.split('\n');
+      
+      // Skip header row and process each data row
+      return rows.slice(1).map(row => {
+        // Handle quoted fields with commas
+        const fields = [];
+        let field = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < row.length; i++) {
+          const char = row[i];
+          
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            fields.push(field.trim());
+            field = '';
+          } else {
+            field += char;
+          }
+        }
+        // Push the last field
+        fields.push(field.trim());
+
+        // Process the fields
+        const [active_users, entry_date_occurrences] = fields;
+        return {
+          active_users: active_users.replace(/['"]+/g, '').trim(),
+          entry_date_occurrences: parseInt(entry_date_occurrences.replace(/['"]+/g, '')),
+        };
+      }).filter(row => 
+        !isNaN(row.entry_date_occurrences)
+      ); // Filter out any invalid rows
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+
   async getADA6Main() {
     try {
       const response = await fetch(
