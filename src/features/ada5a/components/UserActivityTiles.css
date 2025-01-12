@@ -150,6 +150,17 @@
   width: 100%;
 }
 
+.centered-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ag-theme-alpine .ag-header-cell-text,
+.ag-theme-alpine .ag-header-group-cell-text {
+  margin: auto;
+}
+
 .ag-theme-alpine .ag-row {
   border: none !important;
   background: transparent;

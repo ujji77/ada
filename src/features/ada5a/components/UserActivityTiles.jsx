@@ -61,24 +61,31 @@ const UserActivityTiles = () => {
 
         // Create column definitions
         const cols = [
-          {
+            {
             headerName: '',
             field: 'day',
             pinned: 'left',
+            cellClass: 'centered-cell',
             width: 100,
+            // Add center alignment for the day column
             cellStyle: { 
-              display: 'flex',
-              alignItems: 'center'
-            }
-          },
-          ...users.map(user => ({
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            },
+            // Center align the header
+            headerClass: 'centered-header'
+            },
+            ...users.map(user => ({
             headerName: user,
             field: user,
             cellRenderer: ActivityCell,
-            width: 150
-          }))
+            width: 150,
+            // Center align user headers
+            headerClass: 'centered-header'
+            }))
         ];
-
+        
         // Create row data
         const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const rows = days.map(day => {
