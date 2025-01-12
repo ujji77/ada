@@ -124,6 +124,9 @@ const ScatterPlot = () => {
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxX]}
             ticks={useLogScale ? undefined : axisConfig.xTicks}
             tickFormatter={value => `$${(value / 1000).toLocaleString()}k`}
+            tickLine={false}
+            tickSize={10}
+            axisLine={false}
             label={{
               value: 'Value',
               position: 'bottom',
@@ -137,6 +140,9 @@ const ScatterPlot = () => {
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxY]}
             ticks={useLogScale ? undefined : axisConfig.yTicks}
             tickFormatter={value => value.toLocaleString()}
+            tickLine={false}
+            tickSize={10}
+            axisLine={false}
             label={{
               value: 'Number of Journals',
               angle: -90,

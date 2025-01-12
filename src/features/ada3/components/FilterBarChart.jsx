@@ -48,6 +48,7 @@ const FilterBarChart = () => {
           dataKey="active_users"
           tickLine={false}
           tickSize={10}
+          axisLine={false}
           label={{
             value: 'Active Users',
             position: 'bottom',
@@ -58,7 +59,9 @@ const FilterBarChart = () => {
           fontSize={12}
         />
         <YAxis
+          tickLine={false}
           tickFormatter={(value) => `${value}`}
+          axisLine={false}
           label={{
             value: 'Entry Date Occurrences',
             angle: -90,

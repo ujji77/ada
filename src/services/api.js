@@ -206,7 +206,6 @@ async getADA1Scatter() {
       
       // Skip header row and process each data row
       return rows.slice(1).map(row => {
-        // Handle quoted fields with commas
         const fields = [];
         let field = '';
         let inQuotes = false;
@@ -226,19 +225,30 @@ async getADA1Scatter() {
         // Push the last field
         fields.push(field.trim());
 
-        // Process the fields
-        const [entry_date, active_users, value, journals] = fields;
-        return {
+        // Process the fields with new schema
+        const [entry_date, day, month, year, active_users, value, journals] = fields;
+        
+        const processed = {
           entry_date: entry_date.replace(/['"]+/g, '').trim(),
+          day: day.replace(/['"]+/g, '').trim(),
+          month: month.replace(/['"]+/g, '').trim(),
+          year: year.replace(/['"]+/g, '').trim(),
           active_users: parseInt(active_users.replace(/['"]+/g, '')),
           value: parseFloat(value.replace(/['"$,]+/g, '')),
           journals: parseInt(journals.replace(/['"]+/g, '')),
         };
+
+        return processed;
       }).filter(row => 
+        // Only filter numeric fields
         !isNaN(row.active_users) && 
         !isNaN(row.value) && 
         !isNaN(row.journals)
-      ); // Filter out any invalid rows
+      );
+
+      console.log('Processed rows:', processedRows.slice(0, 2));
+      return processedRows;
+
     } catch (error) {
       console.error('API Error:', error);
       throw error;

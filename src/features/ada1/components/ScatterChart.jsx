@@ -115,7 +115,10 @@ const ScatterPlot = () => {
             scale={useLogScale ? 'log' : 'linear'}
             type="number"
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxX]}
+            axisLine={false}
             ticks={useLogScale ? undefined : axisConfig.xTicks}
+            tickLine={false}
+            tickSize={10}
             tickFormatter={value =>
                 useLogScale ? value.toLocaleString() : `$${(value / 1000).toLocaleString()}k`
             }
@@ -130,6 +133,9 @@ const ScatterPlot = () => {
             scale={useLogScale ? 'log' : 'linear'}
             type="number"
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxY]}
+            axisLine={false}
+            tickLine={false}
+            tickSize={10}
             ticks={useLogScale ? undefined : axisConfig.yTicks}
             tickFormatter={value =>
                 useLogScale ? value.toLocaleString() : value

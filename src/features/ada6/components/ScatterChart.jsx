@@ -126,6 +126,9 @@ const ScatterPlot = () => {
             scale={useLogScale ? 'log' : 'linear'}
             type="number"
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxX]}
+            axisLine={false}
+            tickLine={false}
+            tickSize={10}
             ticks={useLogScale ? undefined : axisConfig.xTicks}
             tickFormatter={value =>
               useLogScale ? 
@@ -143,8 +146,11 @@ const ScatterPlot = () => {
             scale={useLogScale ? 'log' : 'linear'}
             type="number"
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxY]}
+            axisLine={false}
             ticks={useLogScale ? undefined : axisConfig.yTicks}
             tickFormatter={value => value.toLocaleString()}
+            tickLine={false}
+            tickSize={10}
             label={{
               value: 'Number of Journals',
               angle: -90,

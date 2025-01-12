@@ -5,7 +5,7 @@ import { ModuleRegistry } from 'ag-grid-community';
 import { ClientSideRowModelModule } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Copy } from 'lucide-react';  // Using lucide-react for icons
+import { Icon } from '@fluentui/react';
 import { api } from '../../../services/api';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
@@ -71,16 +71,20 @@ const DataPointDetails = () => {
             field: 'copy',
             width: 50,
             cellRenderer: () => (
-                <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    height: '100%' 
-                }}>
-                    <Copy size={16} color="#666" style={{ cursor: 'pointer' }} />
-                </div>
-            )
-        }
+              <div className="flex items-center justify-center h-full">
+                <Icon 
+                  iconName="AccountActivity" 
+                  className="cursor-pointer" 
+                  styles={{ 
+                    root: { 
+                      fontSize: 16,
+                      color: '#666'
+                    } 
+                  }} 
+                />
+              </div>
+            ),
+          }
     ];
 
     const defaultColDef = {

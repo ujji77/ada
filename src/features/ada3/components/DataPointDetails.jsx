@@ -4,7 +4,7 @@ import { ModuleRegistry } from 'ag-grid-community';
 import { ClientSideRowModelModule } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Copy } from 'lucide-react'; // Using lucide-react for icons
+import { Icon } from '@fluentui/react/lib/Icon';
 import { api } from '../../../services/api';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
@@ -51,7 +51,7 @@ const DataPointDetails = () => {
     {
       headerName: 'Active Users',
       field: 'active_users',
-      width: 150,
+      width: 120,
       valueFormatter: (params) => params.value.toLocaleString(),
     },
     {
@@ -59,26 +59,31 @@ const DataPointDetails = () => {
       field: 'value',
       width: 150,
       valueFormatter: (params) => `$${params.value.toLocaleString()}`,
+      sort: 'desc', // Default sort
+      sortIndex: 0,  // Primary sort column
     },
     {
       headerName: 'Journals',
       field: 'journals',
       width: 100,
+      valueFormatter: (params) => params.value.toLocaleString(),
     },
     {
       headerName: '',
       field: 'copy',
       width: 50,
       cellRenderer: () => (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-          }}
-        >
-          <Copy size={16} color="#666" style={{ cursor: 'pointer' }} />
+        <div className="flex items-center justify-center h-full">
+          <Icon 
+            iconName="AccountActivity" 
+            className="cursor-pointer" 
+            styles={{ 
+              root: { 
+                fontSize: 16,
+                color: '#666'
+              } 
+            }} 
+          />
         </div>
       ),
     },
@@ -102,24 +107,24 @@ const DataPointDetails = () => {
     fetchData();
   }, []);
 
+  const gridOptions = {
+    onGridReady: (params) => {
+      params.api.sizeColumnsToFit();
+    },
+    onGridSizeChanged: (params) => {
+      params.api.sizeColumnsToFit();
+    }
+  };
+
   return (
     <div className="data-point-details">
-      <div
-        className="grid-header"
-        style={{
-          padding: '16px 0',
-          borderBottom: '1px solid #eaeaea',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <h3 style={{ margin: 0 }}>Data Point Details</h3>
+      <div className="py-4 border-b border-gray-200 flex justify-between items-center">
+        <h3 className="m-0">Data Point Details</h3>
       </div>
       <div
         className="ag-theme-alpine"
         style={{
-          height: '300px',
+          height: '400px',
           width: '100%',
           ...gridStyle,
         }}
@@ -137,6 +142,7 @@ const DataPointDetails = () => {
           enableCellTextSelection={true}
           suppressRowDeselection={false}
           rowMultiSelectWithClick={true}
+          {...gridOptions}
         />
       </div>
     </div>

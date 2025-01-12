@@ -63,12 +63,16 @@ const HistogramChart = () => {
           dataKey="range"
           tickLine={false}
           tickSize={10}
+          axisLine={false}
           label={{ value: 'Amount (ranges)', position: 'bottom', offset: 20, fontSize: 14, style: { textAnchor: 'middle' } }}
           fontSize={12}
         />
         <YAxis
           yAxisId="left"
           orientation="left"
+          axisLine={false}
+          tickLine={false}
+          tickSize={10}
           tickFormatter={(value) => `${value / 1000000}M`}
           label={{ value: 'Value', angle: -90, position: 'insideLeft', fontSize: 14, style: { textAnchor: 'middle' } }}
           fontSize={12}
@@ -76,6 +80,9 @@ const HistogramChart = () => {
         <YAxis
           yAxisId="right"
           orientation="right"
+          axisLine={false}
+          tickLine={false}
+          tickSize={10}
           domain={[0, 'auto']}
           label={{ value: 'Number of journals', angle: -90, position: 'insideRight', fontSize: 14, style: { textAnchor: 'middle' } }}
           fontSize={12}

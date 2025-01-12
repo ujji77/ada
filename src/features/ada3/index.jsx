@@ -3,6 +3,7 @@ import React from 'react';
 import DataPointDetails from './components/DataPointDetails';
 import FilterBarChart from './components/FilterBarChart';
 import LineBarChart from './components/LineBarChart';
+import CalendarHeatmap from './components/CalendarHeatmap';
 
 const AdaThree = () => {
   return (
@@ -15,7 +16,7 @@ const AdaThree = () => {
         padding: '16px',
         boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
       }}>
-        <LineBarChart />
+        <CalendarHeatmap />
       </div>
       
       {/* Second row: Filter Bar Chart and Data Point Details side by side */}
