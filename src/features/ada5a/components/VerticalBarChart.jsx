@@ -3,15 +3,20 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 import { api } from '../../../services/api';
 
 const CustomBarLabel = ({ x, y, width, value }) => {
+  const formattedValue = new Intl.NumberFormat().format(value);
+  const minWidthForInternalLabel = 70; // Adjust this threshold as needed
+  
+  const isLabelInternal = width > minWidthForInternalLabel;
+  
   return (
     <text
-      x={x + width - 8}  // Position near the right end of the bar
-      y={y + 15}         // Vertically center in the bar
-      textAnchor="end"   // Align text to the right
-      fill="white"       // White text color
-      fontSize="12"      // Match the size of other labels
+      x={isLabelInternal ? x + width - 8 : x + width + 8}
+      y={y + 15}
+      textAnchor={isLabelInternal ? "end" : "start"}
+      fill={isLabelInternal ? "white" : "#666"}
+      fontSize="12"
     >
-      {new Intl.NumberFormat().format(value)}
+      {formattedValue}
     </text>
   );
 };
@@ -64,7 +69,7 @@ const FilterBarChart = () => {
         height={300}
         data={data}
         layout="vertical"
-        margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+        margin={{ top: 5, right: 100, left: 40, bottom: 5 }} // Increased right margin for external labels
       >
         <XAxis
           type="number"
