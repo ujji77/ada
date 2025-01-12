@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ResponsiveContainer, ScatterChart, XAxis, YAxis, ZAxis, Tooltip, Scatter } from 'recharts';
+import { ResponsiveContainer, ScatterChart, XAxis, YAxis, ZAxis, Tooltip, Scatter, CartesianGrid } from 'recharts';
 import _ from 'lodash';
 import { api } from '../../../services/api';
 
@@ -11,19 +11,27 @@ const CalendarHeatmap = () => {
     const fetchData = async () => {
       try {
         const chartData = await api.getADA3Main();
-        console.log('Raw data:', chartData); // Debug log
         
-        const transformedData = chartData.map(item => ({
-          x: item.month,
-          y: item.day,
-          active_users: item.active_users,
-          month: item.month,
-          day: item.day,
-          year: item.year
-        }));
-        
-        console.log('Transformed data:', transformedData); // Debug log
-        setData(transformedData);
+        // Log a sample of the raw data to inspect structure
+        console.log('Sample raw data:', chartData.slice(0, 5));
+
+        if (chartData && chartData.length > 0) {
+          const transformedData = chartData.map(item => {
+            const dataPoint = {
+              x: parseInt(item.month),
+              y: parseInt(item.day),
+              active_users: parseInt(item.active_users),
+              month: parseInt(item.month),
+              day: parseInt(item.day),
+              year: parseInt(item.year),
+            };
+            return dataPoint;
+          });
+
+          // Log a sample of transformed data to verify structure
+          console.log('Sample transformed data:', transformedData.slice(0, 5));
+          setData(transformedData);
+        }
       } catch (error) {
         console.error('Error fetching chart data:', error);
       }
@@ -55,9 +63,6 @@ const CalendarHeatmap = () => {
     );
   };
 
-  // Debug log for render
-  console.log('Current data state:', data);
-
   return (
     <div className="w-full min-h-[400px] p-4 border border-gray-200">
       <div className="flex justify-between items-center mb-6">
@@ -79,33 +84,36 @@ const CalendarHeatmap = () => {
           <ScatterChart
             margin={{ top: 20, right: 20, bottom: 20, left: 40 }}
           >
+            <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
             <XAxis 
               type="number"
               dataKey="x"
-              domain={[1, 12]}
+              domain={[0.5, 12.5]}
               tickFormatter={(value) => months[value - 1]}
               axisLine={false}
               tickLine={false}
-              tickSize={10}
               interval={0}
               tick={{ fontSize: 12, fill: '#666' }}
             />
             <YAxis
               type="number"
               dataKey="y"
-              domain={[1, 31]}
+              domain={[0.5, 31.5]}
               tick={{ fontSize: 12, fill: '#666' }}
               axisLine={false}
               tickLine={false}
-              tickSize={10}
               reversed
+              ticks={[1, 5, 10, 15, 20, 25, 30]}
             />
-            <ZAxis type="number" range={[60, 60]} />
+            <ZAxis type="number" range={[50, 50]} />
             <Tooltip content={<CustomTooltip />} />
             <Scatter
               data={data}
               shape={(props) => {
-                if (!props.cx || !props.cy) return null;
+                if (!props.cx || !props.cy) {
+                  console.log('Missing coordinates for point:', props);
+                  return null;
+                }
                 return (
                   <circle
                     cx={props.cx}
@@ -119,6 +127,10 @@ const CalendarHeatmap = () => {
             />
           </ScatterChart>
         </ResponsiveContainer>
+      </div>
+      {/* Debug info */}
+      <div className="mt-2 text-xs text-gray-500">
+        Data points: {data.length}
       </div>
     </div>
   );
