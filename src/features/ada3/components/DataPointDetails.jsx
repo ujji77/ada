@@ -1,11 +1,10 @@
-// src/features/ada3/components/DataPointDetails.jsx
 import React, { useState, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import { ModuleRegistry } from 'ag-grid-community';
 import { ClientSideRowModelModule } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { Copy } from 'lucide-react';
+import { Copy } from 'lucide-react'; // Using lucide-react for icons
 import { api } from '../../../services/api';
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
@@ -15,7 +14,6 @@ const DataPointDetails = () => {
 
   // Custom Styles for AG Grid
   const gridStyle = {
-    // Add custom style class
     '--ag-font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif',
     '--ag-font-size': '12px',
     '--ag-cell-horizontal-padding': '12px',
@@ -33,12 +31,25 @@ const DataPointDetails = () => {
 
   const columnDefs = [
     {
-      headerName: 'Entry date',
+      headerName: '',
+      field: 'checkboxSelection',
+      headerCheckboxSelection: true,
+      checkboxSelection: true,
+      width: 40,
+      headerCheckboxSelectionFilteredOnly: true,
+      showDisabledCheckboxes: true,
+      pinned: 'left',
+      lockPosition: true,
+      suppressMenu: true,
+      cellClass: 'checkbox-cell',
+    },
+    {
+      headerName: 'Entry Date',
       field: 'entry_date',
       width: 150,
     },
     {
-      headerName: 'Active users',
+      headerName: 'Active Users',
       field: 'active_users',
       width: 150,
       valueFormatter: (params) => params.value.toLocaleString(),
@@ -59,16 +70,18 @@ const DataPointDetails = () => {
       field: 'copy',
       width: 50,
       cellRenderer: () => (
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          height: '100%' 
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+          }}
+        >
           <Copy size={16} color="#666" style={{ cursor: 'pointer' }} />
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   const defaultColDef = {
@@ -91,21 +104,24 @@ const DataPointDetails = () => {
 
   return (
     <div className="data-point-details">
-      <div className="grid-header" style={{
-        padding: '16px 0',
-        borderBottom: '1px solid #eaeaea',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
+      <div
+        className="grid-header"
+        style={{
+          padding: '16px 0',
+          borderBottom: '1px solid #eaeaea',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <h3 style={{ margin: 0 }}>Data Point Details</h3>
       </div>
-      <div 
-        className="ag-theme-alpine" 
-        style={{ 
+      <div
+        className="ag-theme-alpine"
+        style={{
           height: '300px',
           width: '100%',
-          ...gridStyle
+          ...gridStyle,
         }}
       >
         <AgGridReact
@@ -119,7 +135,6 @@ const DataPointDetails = () => {
           suppressCellFocus={true}
           suppressRowHoverHighlight={false}
           enableCellTextSelection={true}
-          // Add these additional props
           suppressRowDeselection={false}
           rowMultiSelectWithClick={true}
         />
