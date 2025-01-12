@@ -7,20 +7,22 @@ import _ from 'lodash';
 import './UserActivityTiles.css'
 
 const ActivityCell = (props) => {
-  if (!props.value) return null;
-
-  const { amount, percentage } = props.value;
+    if (!props.value) return null;
   
-  return (
-    <div className="activity-cell">
-      <div className="amount">${amount.toLocaleString()}</div>
-      <div 
-        className="activity-bar" 
-        style={{ width: `${percentage}%` }}
-      />
-    </div>
-  );
-};
+    const { amount, percentage } = props.value;
+    
+    return (
+      <div className="activity-cell">
+        <div className="cell-content">
+          <div className="amount">${amount.toLocaleString()}</div>
+          <div 
+            className="activity-bar" 
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+      </div>
+    );
+  };
 
 const UserActivityTiles = () => {
   const [rowData, setRowData] = useState([]);
@@ -144,8 +146,8 @@ const UserActivityTiles = () => {
           defaultColDef={defaultColDef}
           suppressRowHoverHighlight={true}
           suppressCellSelection={true}
-          headerHeight={100}
-          rowHeight={80}
+          headerHeight={60}
+          rowHeight={60}
           domLayout='normal'
         />
       </div>
