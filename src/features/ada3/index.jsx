@@ -2,7 +2,6 @@
 import React from 'react';
 import DataPointDetails from './components/DataPointDetails';
 import FilterBarChart from './components/FilterBarChart';
-import LineBarChart from './components/LineBarChart';
 import CalendarHeatmap from './components/CalendarHeatmap';
 
 const AdaThree = () => {

@@ -125,6 +125,11 @@ const AccountMatrix = () => {
     <div className="account-matrix-container">
       <div className="matrix-header">
         <h3>Account Combination Matrix</h3>
+        <span style={{ 
+          color: '#666',
+          cursor: 'help',
+          fontSize: '14px'
+        }}>ⓘ</span>
         <button>Clear filters</button>
       </div>
       <div className="matrix-side-label">

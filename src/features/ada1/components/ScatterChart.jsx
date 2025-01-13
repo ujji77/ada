@@ -101,7 +101,11 @@ const ScatterPlot = () => {
         marginBottom: '16px'
       }}>
         <h3 style={{ margin: 0 }}>Distribution of Amounts</h3>
-        <i className="ms-Icon ms-Icon--Info" style={{ color: '#666' }} />
+        <span style={{ 
+          color: '#666',
+          cursor: 'help',
+          fontSize: '14px'
+        }}>ⓘ</span>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>Journals selected (0)</span>
           <button className="add-button">Add</button>

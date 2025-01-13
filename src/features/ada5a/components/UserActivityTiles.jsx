@@ -136,6 +136,11 @@ const UserActivityTiles = () => {
     <div className="user-activity-container">
       <div className="activity-header">
         <h3>Count and Total Value of Postings per User</h3>
+        <span style={{ 
+          color: '#666',
+          cursor: 'help',
+          fontSize: '14px'
+        }}>ⓘ</span>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>Journals selected (0)</span>
           <button className="add-button">Add</button>

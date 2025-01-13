@@ -47,7 +47,12 @@ const HistogramChart = () => {
         marginBottom: '16px'
       }}>
         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Histogram</h3>
-        <i className="ms-Icon ms-Icon--Info" style={{ color: '#666', fontSize: '14px' }} />
+        <span style={{ 
+          color: '#666',
+          cursor: 'help',
+          fontSize: '14px'
+        }}>ⓘ</span>
+        <button className="alchemy-link">Clear filters</button>
       </div>
       <ComposedChart
         width={600}

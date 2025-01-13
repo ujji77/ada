@@ -35,7 +35,11 @@ const FilterBarChart = () => {
         marginBottom: '16px',
       }}>
         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Active Users vs. Entry Date Occurrences</h3>
-        <i className="ms-Icon ms-Icon--Info" style={{ color: '#666', fontSize: '14px' }} />
+        <span style={{ 
+          color: '#666',
+          cursor: 'help',
+          fontSize: '14px'
+        }}>ⓘ</span>
       </div>
       <BarChart
         width={600}
