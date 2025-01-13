@@ -127,7 +127,7 @@ const UserActivityTiles = () => {
     sortable: false,
     resizable: false,
     suppressMovable: true,
-    cellStyle: { padding: 0 }
+    cellStyle: { padding: 4 }
   };
 
   if (loading) return <div>Loading...</div>;
@@ -156,8 +156,8 @@ const UserActivityTiles = () => {
           defaultColDef={defaultColDef}
           suppressRowHoverHighlight={true}
           suppressCellSelection={true}
-          headerHeight={60}
-          rowHeight={60}
+          headerHeight={50}
+          rowHeight={50}
           domLayout='normal'
         />
       </div>
