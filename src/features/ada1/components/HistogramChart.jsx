@@ -52,7 +52,6 @@ const HistogramChart = () => {
           cursor: 'help',
           fontSize: '14px'
         }}>ⓘ</span>
-        <button className="alchemy-link">Clear filters</button>
       </div>
       <ComposedChart
         width={600}
