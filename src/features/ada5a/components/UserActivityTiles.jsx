@@ -3,119 +3,125 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { api } from '../../../services/api';
+import { calculateGroupPercentages } from '../../../utils/percentageCalculations';
+import SortToggleButton from '../../../components/shared/SortToggleButton';
 import _ from 'lodash';
 import './UserActivityTiles.css'
 
 const ActivityCell = (props) => {
-    if (!props.value) return null;
+  if (!props.value) return null;
+
+  const { amount, percentage } = props.value;
   
-    const { amount, percentage } = props.value;
-    
-    return (
-      <div className="activity-cell">
-        <div className="cell-content">
-          <div className="amount">${amount.toLocaleString()}</div>
-          <div 
-            className="activity-bar" 
-            style={{ width: `${percentage}%` }}
-          />
+  return (
+    <div className="activity-cell">
+      <div className="cell-content">
+        <div className="amount">
+          {typeof amount === 'number' && !Number.isInteger(amount) 
+            ? `$${amount.toLocaleString()}` 
+            : amount.toLocaleString()}
         </div>
+        <div 
+          className="activity-bar" 
+          style={{ width: `${percentage}%` }}
+        />
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 const UserActivityTiles = () => {
   const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortByValue, setSortByValue] = useState(true);
+  const [rawData, setRawData] = useState(null);
 
-  // Calculate percentage of total for each user's daily amount
-  const calculatePercentages = (data) => {
-    // Group by user_name to get totals
-    const userTotals = {};
-    data.forEach(item => {
-      if (!userTotals[item.user_name]) {
-        userTotals[item.user_name] = 0;
-      }
-      userTotals[item.user_name] += item.volume;
+  // Function to transform data based on sort type
+  const transformData = (detailData, sortByValue) => {
+    const users = _.uniq(detailData.map(item => item.user_name));
+    const valueField = sortByValue ? 'volume' : 'journal_count';
+    
+    // Calculate percentages using the utility function
+    const dataWithPercentages = calculateGroupPercentages(detailData, 'user_name', valueField);
+
+    // Create column definitions
+    const cols = [
+      {
+        headerName: '',
+        field: 'day',
+        pinned: 'left',
+        cellClass: 'centered-cell',
+        width: 100,
+        cellStyle: { 
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        },
+        headerClass: 'centered-header'
+      },
+      ...users.map(user => ({
+        headerName: user,
+        field: user,
+        cellRenderer: ActivityCell,
+        width: 150,
+        headerClass: 'centered-header'
+      }))
+    ];
+    
+    // Create row data
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const rows = days.map(day => {
+      const row = { day };
+      users.forEach(user => {
+        const userDay = dataWithPercentages.find(item => 
+          item.day === day && 
+          item.user_name === user
+        );
+        if (userDay) {
+          row[user] = {
+            amount: userDay[valueField],
+            percentage: userDay.percentage
+          };
+        }
+      });
+      return row;
     });
 
-    // Add percentage to each record
-    return data.map(item => ({
-      ...item,
-      percentage: (item.volume / userTotals[item.user_name]) * 100
-    }));
+    return { cols, rows };
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawData = await api.getADA5AMain();
+        const data = await api.getADA5AMain();
+        const detailData = data.filter(row => !row.isGroup);
+        setRawData(detailData);
         
-        // Filter out summary rows and get unique users
-        const detailData = rawData.filter(row => !row.isGroup);
-        const users = _.uniq(detailData.map(item => item.user_name));
-        
-        // Calculate percentages
-        const dataWithPercentages = calculatePercentages(detailData);
-
-        // Create column definitions
-        const cols = [
-            {
-            headerName: '',
-            field: 'day',
-            pinned: 'left',
-            cellClass: 'centered-cell',
-            width: 100,
-            // Add center alignment for the day column
-            cellStyle: { 
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            },
-            // Center align the header
-            headerClass: 'centered-header'
-            },
-            ...users.map(user => ({
-            headerName: user,
-            field: user,
-            cellRenderer: ActivityCell,
-            width: 150,
-            // Center align user headers
-            headerClass: 'centered-header'
-            }))
-        ];
-        
-        // Create row data
-        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const rows = days.map(day => {
-          const row = { day };
-          users.forEach(user => {
-            const userDay = dataWithPercentages.find(item => 
-              item.day === day && 
-              item.user_name === user
-            );
-            if (userDay) {
-              row[user] = {
-                amount: userDay.volume,
-                percentage: userDay.percentage
-              };
-            }
-          });
-          return row;
-        });
-
+        const { cols, rows } = transformData(detailData, sortByValue);
         setColumnDefs(cols);
         setRowData(rows);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching activity data:', error);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (rawData) {
+      const { cols, rows } = transformData(rawData, sortByValue);
+      setColumnDefs(cols);
+      setRowData(rows);
+    }
+  }, [sortByValue, rawData]);
+
+  const handleToggleSort = () => {
+    setSortByValue(prev => !prev);
+  };
 
   const defaultColDef = {
     sortable: false,
@@ -130,14 +136,11 @@ const UserActivityTiles = () => {
     <div className="user-activity-container">
       <div className="activity-header">
         <h3>Count and Total Value of Postings per User</h3>
-        <div className="header-actions">
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>Journals selected (0)</span>
           <button className="add-button">Add</button>
           <button className="clear-button">Clear all</button>
-          <div className="sort-buttons">
-            <button className="active">By value</button>
-            <button>By journal count</button>
-          </div>
+          <SortToggleButton sortByValue={sortByValue} handleToggleSort={handleToggleSort} />
         </div>
       </div>
       <div 
