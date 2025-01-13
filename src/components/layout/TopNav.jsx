@@ -1,51 +1,76 @@
-// src/components/layout/TopNav.jsx
 import React from 'react';
-import { CommandBar } from '@fluentui/react/lib/CommandBar';
+import { IconButton } from '@fluentui/react/lib/Button';
+
+const styles = {
+  topNav: {
+    borderBottom: '1px solid #eee',
+    backgroundColor: 'white',
+    padding: '12px 24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  leftSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '24px'
+  },
+  rightSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '16px'
+  },
+  brandText: {
+    fontSize: '14px',
+    fontWeight: 500,
+    color: '#333'
+  },
+  button: {
+    padding: '6px 16px',
+    borderRadius: '4px',
+    fontSize: '14px',
+    cursor: 'pointer'
+  },
+  confirmButton: {
+    backgroundColor: '#f3f3f3',
+    border: 'none',
+    color: '#333'
+  },
+  outliersButton: {
+    backgroundColor: 'white',
+    border: '1px solid #C84C0C',
+    color: '#C84C0C'
+  },
+  questionIcon: {
+    color: '#666',
+    fontSize: '16px',
+    marginLeft: '8px',
+    cursor: 'pointer'
+  }
+};
 
 const TopNav = () => {
-  const commandItems = [
-    {
-      key: 'confirm',
-      text: 'Confirm',
-      buttonStyles: { root: { backgroundColor: '#f3f3f3', marginRight: 8 } }
-    },
-    {
-      key: 'outliers',
-      text: 'Outliers',
-      buttonStyles: { root: { borderColor: '#C84C0C', color: '#C84C0C' } }
-    }
-  ];
-
-  const farItems = [
-    {
-      key: 'settings',
-      iconProps: { iconName: 'Settings' },
-      buttonStyles: { root: { color: '#666' } }
-    },
-    {
-      key: 'close',
-      iconProps: { iconName: 'Cancel' },
-      buttonStyles: { root: { color: '#666' } }
-    }
-  ];
-
   return (
-    <div style={{ borderBottom: '1px solid #eee', backgroundColor: 'white' }}>
-      <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px' }}>
-        <div style={{ fontWeight: 500, marginRight: 24 }}>Alchemy</div>
-        <div style={{ fontWeight: 500 }}>Audit Data Analytics</div>
-        <div style={{ 
-          backgroundColor: '#f3f3f3', 
-          padding: '2px 6px', 
-          borderRadius: 4, 
-          marginLeft: 8 
-        }}>0</div>
-        <CommandBar
-          items={commandItems}
-          farItems={farItems}
-          styles={{
-            root: { border: 'none' }
-          }}
+    <div style={styles.topNav}>
+      <div style={styles.leftSection}>
+        <span style={styles.brandText}>Alchemy</span>
+        <span style={styles.brandText}>Audit Data Analytics</span>
+        <i className="ms-Icon ms-Icon--Info" style={styles.questionIcon} />
+      </div>
+      <div style={styles.rightSection}>
+        <button style={{...styles.button, ...styles.confirmButton}}>
+          Confirm
+        </button>
+        <button style={{...styles.button, ...styles.outliersButton}}>
+          Outliers
+        </button>
+        <IconButton
+          iconProps={{ iconName: 'Settings' }}
+          styles={{ root: { color: '#666' } }}
+        />
+        <IconButton
+          iconProps={{ iconName: 'Cancel' }}
+          styles={{ root: { color: '#666' } }}
         />
       </div>
     </div>
