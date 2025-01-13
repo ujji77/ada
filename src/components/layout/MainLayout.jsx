@@ -22,12 +22,11 @@ const styles = {
     padding: '24px'
   },
   headerContainer: {
-    backgroundColor: '#f3f3f3',
     borderRadius: '4px',
     marginBottom: '16px'
   },
   headerContent: {
-    padding: '16px 24px',
+    // padding: '16px 24px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between'
@@ -37,7 +36,10 @@ const styles = {
     alignItems: 'center',
     gap: '8px',
     color: '#333',
-    fontSize: '14px'
+    backgroundColor: '#e8e8e8',
+    fontSize: '14px',
+    padding: '8px 16px',
+    borderRadius: '4px',
   },
   headerRight: {
     display: 'flex',
@@ -71,12 +73,12 @@ const styles = {
     marginLeft: '8px'
   },
   notificationContainer: {
-    backgroundColor: '#f3f3f3',
+    backgroundColor: '#e8e8e8',
     borderRadius: '4px',
     marginBottom: '16px'
   },
   notification: {
-    padding: '16px 24px',
+    padding: '8px 16px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between'
