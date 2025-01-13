@@ -10,6 +10,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { api } from '../../../services/api';
+import { abbreviateNumber } from '../../../utils/numberFormat';
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -57,8 +58,8 @@ const ScatterPlot = () => {
         // Transform data for scatter plot
         const transformedData = userData.map(user => ({
           ...user,
-          x: user.value, // Use total value for x-axis
-          y: user.journals // Use journal count for y-axis
+          x: user.value,
+          y: user.journals
         }));
 
         setData(transformedData);
@@ -67,8 +68,8 @@ const ScatterPlot = () => {
         const maxValue = Math.max(...userData.map(d => d.value));
         const maxJournals = Math.max(...userData.map(d => d.journals));
 
-        const xLimit = Math.ceil(maxValue / 1000000) * 1000000; // Round to nearest million
-        const yLimit = Math.ceil(maxJournals / 1000) * 1000; // Round to nearest thousand
+        const xLimit = Math.ceil(maxValue / 1000000) * 1000000;
+        const yLimit = Math.ceil(maxJournals / 1000) * 1000;
 
         const xTicks = Array.from(
           { length: 5 },
@@ -130,11 +131,7 @@ const ScatterPlot = () => {
             tickLine={false}
             tickSize={10}
             ticks={useLogScale ? undefined : axisConfig.xTicks}
-            tickFormatter={value =>
-              useLogScale ? 
-                `$${value.toLocaleString()}` : 
-                `$${(value / 1000000).toLocaleString()}M`
-            }
+            tickFormatter={value => `$${abbreviateNumber(value)}`}
             label={{
               value: 'Total Value Posted',
               position: 'bottom',
@@ -148,14 +145,14 @@ const ScatterPlot = () => {
             domain={useLogScale ? [1, 'auto'] : [0, axisConfig.maxY]}
             axisLine={false}
             ticks={useLogScale ? undefined : axisConfig.yTicks}
-            tickFormatter={value => value.toLocaleString()}
+            tickFormatter={value => abbreviateNumber(value)}
             tickLine={false}
             tickSize={10}
             label={{
               value: 'Number of Journals',
               angle: -90,
               position: 'insideLeft',
-              offset: 10,
+              offset: -10,
               style: { textAnchor: 'middle' }
             }}
           />

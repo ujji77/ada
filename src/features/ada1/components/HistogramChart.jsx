@@ -1,4 +1,3 @@
-// src/features/ada1/components/HistogramChart.jsx
 import React, { useState, useEffect } from 'react';
 import {
   ComposedChart,
@@ -11,6 +10,7 @@ import {
   Legend
 } from 'recharts';
 import { api } from '../../../services/api';
+import { abbreviateNumber } from '../../../utils/numberFormat';
 
 const HistogramChart = () => {
   const [data, setData] = useState([]);
@@ -21,7 +21,7 @@ const HistogramChart = () => {
       try {
         const histogramData = await api.getADA1Histogram();
         const formattedData = histogramData.map(item => ({
-          range: `${item.bucket_start.toLocaleString()}-${item.bucket_end.toLocaleString()}`,
+          range: `$${abbreviateNumber(item.bucket_start)}-${abbreviateNumber(item.bucket_end)}`,
           count: item.count,
           sum_amount: item.sum_amount
         }));
@@ -37,8 +37,6 @@ const HistogramChart = () => {
   }, []);
 
   if (loading) return <div>Loading histogram data...</div>;
-
-  
 
   return (
     <div>
@@ -73,7 +71,7 @@ const HistogramChart = () => {
           axisLine={false}
           tickLine={false}
           tickSize={10}
-          tickFormatter={(value) => `${value / 1000000}M`}
+          tickFormatter={(value) => `$${abbreviateNumber(value)}`}
           label={{ value: 'Value', angle: -90, position: 'insideLeft', fontSize: 14, style: { textAnchor: 'middle' } }}
           fontSize={12}
         />
@@ -84,6 +82,7 @@ const HistogramChart = () => {
           tickLine={false}
           tickSize={10}
           domain={[0, 'auto']}
+          tickFormatter={(value) => abbreviateNumber(value)}
           label={{ value: 'Number of journals', angle: -90, position: 'insideRight', fontSize: 14, style: { textAnchor: 'middle' } }}
           fontSize={12}
         />

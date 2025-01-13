@@ -17,7 +17,7 @@ import { abbreviateNumber } from '../../../utils/numberFormat';
 const LineBarChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [useLogScale, setUseLogScale] = useState(true); // Default to log scale
+  const [useLogScale, setUseLogScale] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {

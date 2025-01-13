@@ -10,6 +10,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { api } from '../../../services/api';
+import { abbreviateNumber } from '../../../utils/numberFormat';
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
@@ -22,7 +23,7 @@ const CustomTooltip = ({ active, payload }) => {
         borderRadius: '4px'
       }}>
         <p style={{ margin: '0 0 8px 0' }}><strong>Range:</strong> {data.range}</p>
-        <p style={{ margin: '0 0 8px 0' }}><strong>Journals:</strong> {data.count}</p>
+        <p style={{ margin: '0 0 8px 0' }}><strong>Journals:</strong> {data.count.toLocaleString()}</p>
         <p style={{ margin: '0' }}><strong>Total:</strong> ${data.sum_amount.toLocaleString()}</p>
       </div>
     );
@@ -119,16 +120,14 @@ const ScatterPlot = () => {
             ticks={useLogScale ? undefined : axisConfig.xTicks}
             tickLine={false}
             tickSize={10}
-            tickFormatter={value =>
-                useLogScale ? value.toLocaleString() : `$${(value / 1000).toLocaleString()}k`
-            }
+            tickFormatter={value => `$${abbreviateNumber(value)}`}
             label={{
-                value: 'Amount',
-                position: 'bottom',
-                offset: 20
+              value: 'Amount',
+              position: 'bottom',
+              offset: 20
             }}
-            />
-            <YAxis
+          />
+          <YAxis
             dataKey="count"
             scale={useLogScale ? 'log' : 'linear'}
             type="number"
@@ -137,17 +136,15 @@ const ScatterPlot = () => {
             tickLine={false}
             tickSize={10}
             ticks={useLogScale ? undefined : axisConfig.yTicks}
-            tickFormatter={value =>
-                useLogScale ? value.toLocaleString() : value
-            }
+            tickFormatter={value => abbreviateNumber(value)}
             label={{
-                value: 'Number of journals',
-                angle: -90,
-                position: 'insideLeft',
-                offset: 0,
-                style: { textAnchor: 'middle' }
+              value: 'Number of journals',
+              angle: -90,
+              position: 'insideLeft',
+              offset: 0,
+              style: { textAnchor: 'middle' }
             }}
-            />
+          />
           <Tooltip content={<CustomTooltip />} />
           <Scatter
             data={data}

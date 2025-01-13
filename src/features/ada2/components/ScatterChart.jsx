@@ -36,7 +36,7 @@ const CustomTooltip = ({ active, payload }) => {
 const ScatterPlot = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [useLogScale, setUseLogScale] = useState(true); // Default to log scale
+  const [useLogScale, setUseLogScale] = useState(false);
   const [axisConfig, setAxisConfig] = useState({
     maxX: 0,
     maxY: 0,
