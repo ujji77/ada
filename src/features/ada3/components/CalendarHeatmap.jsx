@@ -11,16 +11,19 @@ const CalendarHeatmap = () => {
         const response = await api.getADA3Main();
         
         // Transform API data to match the scatter plot format
-        const transformedData = response.map(item => ({
-          date: item.entry_date,
-          week: Math.floor((new Date(item.entry_date)).getDate() / 7),
-          day: getDayNumber(item.day), // Convert day name to number
-          active_users: item.active_users,
-          month: item.month,
-          year: item.year,
-          value: item.value,
-          journals: item.journals
-        }));
+        const transformedData = response.map(item => {
+          const date = new Date(item.entry_date);
+          return {
+            date: item.entry_date,
+            weekNumber: getWeekNumber(date),
+            day: getDayNumber(item.day),
+            active_users: item.active_users,
+            month: item.month,
+            year: item.year,
+            value: item.value,
+            journals: item.journals
+          };
+        });
 
         setData(transformedData);
       } catch (error) {
@@ -31,9 +34,22 @@ const CalendarHeatmap = () => {
     fetchData();
   }, []);
 
+  // Get ISO week number of the year
+  const getWeekNumber = (date) => {
+    const target = new Date(date.valueOf());
+    const dayNumber = (date.getDay() + 6) % 7;
+    target.setDate(target.getDate() - dayNumber + 3);
+    const firstThursday = target.valueOf();
+    target.setMonth(0, 1);
+    if (target.getDay() !== 4) {
+      target.setMonth(0, 1 + ((4 - target.getDay()) + 7) % 7);
+    }
+    return 1 + Math.ceil((firstThursday - target) / 604800000);
+  };
+
   // Convert day names to numbers (0-6)
   const getDayNumber = (dayName) => {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     return days.findIndex(day => dayName.startsWith(day));
   };
 
@@ -67,6 +83,19 @@ const CalendarHeatmap = () => {
         </p>
       </div>
     );
+  };
+
+  // Function to format week numbers into month labels
+  const formatWeekToMonth = (week) => {
+    if (!data.length) return '';
+    
+    // Find the first date in this week
+    const dateInWeek = data.find(d => d.weekNumber === week)?.date;
+    if (!dateInWeek) return '';
+
+    const date = new Date(dateInWeek);
+    // Only show month name at the start of each month
+    return date.getDate() <= 7 ? date.toLocaleString('default', { month: 'short' }) : '';
   };
 
   return (
@@ -110,17 +139,18 @@ const CalendarHeatmap = () => {
           >
             <XAxis
               type="number"
-              dataKey="week"
-              domain={[0, 52]}
-              tickFormatter={() => ''}
-              tick={false}
+              dataKey="weekNumber"
+              domain={[1, 52]}
+              tickFormatter={formatWeekToMonth}
+              tick={{ fontSize: 12, fill: '#666' }}
+              interval={0}
               axisLine={false}
             />
             <YAxis
               type="number"
               dataKey="day"
               domain={[0, 6]}
-              tickFormatter={(day) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]}
+              tickFormatter={(day) => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][day]}
               tick={{ fontSize: 12, fill: '#666' }}
               axisLine={false}
               tickLine={false}
