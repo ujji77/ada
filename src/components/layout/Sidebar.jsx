@@ -1,5 +1,4 @@
 import React from 'react';
-import { Nav } from '@fluentui/react/lib/Nav';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { routes } from '../../constants/routes';
@@ -98,58 +97,14 @@ const Sidebar = ({ isCollapsed, onCollapse }) => {
   const navGroups = [
     {
       name: 'Revenue to AR',
-      links: [
-        {
-          key: 'amount',
-          name: 'Amount',
-          status: 'Not prepared',
-          url: '/ada1',
-          onClick: () => navigate('/ada1')
-        },
-        {
-          key: 'account',
-          name: 'Account combination',
-          status: 'Not prepared',
-          url: '/ada2',
-          onClick: () => navigate('/ada2')
-        },
-        {
-          key: 'entry-date',
-          name: 'Entry date',
-          status: 'Not prepared',
-          url: '/ada3',
-          onClick: () => navigate('/ada3')
-        },
-        {
-          key: 'dating',
-          name: 'Back/forward dating',
-          status: 'Not prepared',
-          url: '/ada4',
-          onClick: () => navigate('/ada4')
-        },
-        {
-          key: 'entry-time',
-          name: 'Entry time',
-          status: 'Not prepared',
-          url: '/ada5a',
-          onClick: () => navigate('/ada5a')
-        },
-        {
-          key: 'entry-datetime',
-          name: 'Entry date & time',
-          status: 'Insufficient data',
-          disabled: true,
-          url: '/ada5b',
-          onClick: () => navigate('/ada5b')
-        },
-        {
-          key: 'user-activity',
-          name: 'User Activity',
-          status: 'Not prepared',
-          url: '/ada6',
-          onClick: () => navigate('/ada6')
-        }
-      ]
+      links: routes.map(route => ({
+        key: route.id,
+        name: route.label,
+        status: route.status,
+        url: route.path,
+        onClick: () => navigate(route.path),
+        disabled: route.status === 'Insufficient data'
+      }))
     }
   ];
 

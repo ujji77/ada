@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import TopNav from './TopNav';
+import { routes } from '../../constants/routes';
 
 const styles = {
   container: {
@@ -109,13 +110,26 @@ const styles = {
     borderRadius: '4px',
     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
     padding: '24px'
+  },
+  routePath: {
+    color: '#666',
+    fontSize: '14px',
+    marginLeft: '4px'
   }
 };
 
 const MainLayout = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const location = useLocation();
-  const currentAda = location.pathname.split('/')[1] || 'ada1';
+  
+  // Get current route information
+  const currentPath = location.pathname.split('/')[1] || 'ada1';
+  const currentRoute = routes.find(route => route.id === currentPath);
+
+  // Format the route path (e.g., "ada1" -> "ADA 1")
+  const formattedPath = currentRoute?.id
+    ? `(${currentRoute.id.replace('ada', 'ADA ').toUpperCase()})`
+    : '';
   
   return (
     <div style={styles.container}>
@@ -131,8 +145,9 @@ const MainLayout = ({ children }) => {
               <div style={styles.headerLeft}>
                 <span>Revenue to AR</span>
                 <span style={styles.divider}>|</span>
-                <span>Entry time</span>
-                <span style={styles.statusTag}>Not prepared</span>
+                <span>{currentRoute?.label}</span>
+                <span style={styles.routePath}>{formattedPath}</span>
+                <span style={styles.statusTag}>{currentRoute?.status || 'Not prepared'}</span>
               </div>
               <div style={styles.headerRight}>
                 <div style={styles.currencyContainer}>USD</div>

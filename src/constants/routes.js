@@ -2,33 +2,44 @@
 export const routes = [
     {
       id: 'ada1',
-      label: 'ADA 1',
-      path: '/ada1'
+      label: 'Amount',
+      path: '/ada1',
+      status: 'Not prepared'
     },
     {
       id: 'ada2',
-      label: 'ADA 2',
-      path: '/ada2'
+      label: 'Account combination',
+      path: '/ada2',
+      status: 'Not prepared'
     },
     {
       id: 'ada3',
-      label: 'ADA 3',
-      path: '/ada3'
+      label: 'Entry date',
+      path: '/ada3',
+      status: 'Not prepared'
     },
     {
       id: 'ada4',
-      label: 'ADA 4',
-      path: '/ada4'
+      label: 'Back/forward dating',
+      path: '/ada4',
+      status: 'Not prepared'
     },
     {
       id: 'ada5a',
-      label: 'ADA 5a',
-      path: '/ada5a'
+      label: 'Entry time',
+      path: '/ada5a',
+      status: 'Not prepared'
+    },
+    {
+      id: 'ada5b',
+      label: 'Entry date & time',
+      path: '/ada5b',
+      status: 'Insufficient data'
     },
     {
       id: 'ada6',
-      label: 'ADA 6',
-      path: '/ada6'
-    },
-    // ... ADA 3-6
+      label: 'User Activity',
+      path: '/ada6',
+      status: 'Not prepared'
+    }
   ];
