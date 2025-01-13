@@ -2,9 +2,11 @@ import React from 'react';
 import DataPointDetails from './components/DataPointDetails';
 import FilterBarChart from './components/VerticalBarChart';
 import UserActivityTiles from './components/UserActivityTiles';
+import { SortProvider } from '../../contexts/SortContext';
 
 const AdaFiveA = () => {
   return (
+    <SortProvider>
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Top row: Line/Bar Chart */}
       <div style={{ 
@@ -43,6 +45,7 @@ const AdaFiveA = () => {
         </div>
       </div>
     </div>
+    </SortProvider>
   );
 };
 

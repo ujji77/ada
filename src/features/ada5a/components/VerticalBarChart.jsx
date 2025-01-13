@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 import { api } from '../../../services/api';
 import SortToggleButton from '../../../components/shared/SortToggleButton';
+import { useSort } from '../../../contexts/SortContext';
 
 const CustomBarLabel = ({ x, y, width, value }) => {
   const formattedValue = new Intl.NumberFormat().format(value);
@@ -24,8 +25,8 @@ const CustomBarLabel = ({ x, y, width, value }) => {
 const FilterBarChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortByValue, setSortByValue] = useState(true);
   const [rawData, setRawData] = useState(null);
+  const { sortByValue, handleToggleSort } = useSort();
 
   const transformData = (responseData, useValue) => {
     return responseData
@@ -62,10 +63,6 @@ const FilterBarChart = () => {
       setData(transformedData);
     }
   }, [sortByValue, rawData]);
-
-  const handleToggleSort = () => {
-    setSortByValue(prev => !prev);
-  };
 
   if (loading) return <div>Loading chart data...</div>;
 

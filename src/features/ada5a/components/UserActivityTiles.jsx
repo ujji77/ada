@@ -5,8 +5,9 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { api } from '../../../services/api';
 import { calculateGroupPercentages } from '../../../utils/percentageCalculations';
 import SortToggleButton from '../../../components/shared/SortToggleButton';
+import { useSort } from '../../../contexts/SortContext';
 import _ from 'lodash';
-import './UserActivityTiles.css'
+import './UserActivityTiles.css';
 
 const ActivityCell = (props) => {
   if (!props.value) return null;
@@ -34,18 +35,15 @@ const UserActivityTiles = () => {
   const [rowData, setRowData] = useState([]);
   const [columnDefs, setColumnDefs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [sortByValue, setSortByValue] = useState(true);
   const [rawData, setRawData] = useState(null);
+  const { sortByValue, handleToggleSort } = useSort();
 
-  // Function to transform data based on sort type
   const transformData = (detailData, sortByValue) => {
     const users = _.uniq(detailData.map(item => item.user_name));
     const valueField = sortByValue ? 'volume' : 'journal_count';
     
-    // Calculate percentages using the utility function
     const dataWithPercentages = calculateGroupPercentages(detailData, 'user_name', valueField);
 
-    // Create column definitions
     const cols = [
       {
         headerName: '',
@@ -69,7 +67,6 @@ const UserActivityTiles = () => {
       }))
     ];
     
-    // Create row data
     const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     const rows = days.map(day => {
       const row = { day };
@@ -118,10 +115,6 @@ const UserActivityTiles = () => {
       setRowData(rows);
     }
   }, [sortByValue, rawData]);
-
-  const handleToggleSort = () => {
-    setSortByValue(prev => !prev);
-  };
 
   const defaultColDef = {
     sortable: false,
