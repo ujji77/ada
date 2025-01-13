@@ -68,9 +68,9 @@ const LineBarChart = () => {
       }}>
         <h3 style={{ margin: 0 }}>Count and Total Value of Postings per User</h3>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span>Journals selected (5)</span>
-          <button className="btn btn-primary" style={{ backgroundColor: '#C84C0C', border: 'none' }}>Add</button>
-          <button className="btn btn-link" style={{ color: '#C84C0C' }}>Clear all</button>
+          <span>Journals selected (0)</span>
+          <button className="add-button">Add</button>
+          <button className="clear-button">Clear all</button>
           <ScaleToggleButton useLogScale={useLogScale} handleToggleScale={handleToggleScale} />
         </div>
       </div>

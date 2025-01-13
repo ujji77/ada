@@ -102,7 +102,10 @@ const ScatterPlot = () => {
       }}>
         <h3 style={{ margin: 0 }}>Distribution of Amounts</h3>
         <i className="ms-Icon ms-Icon--Info" style={{ color: '#666' }} />
-        <div style={{ marginLeft: 'auto' }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span>Journals selected (0)</span>
+          <button className="add-button">Add</button>
+          <button className="clear-button">Clear all</button>
           <ScaleToggleButton useLogScale={useLogScale} handleToggleScale={handleToggleScale} />
         </div>
       </div>
