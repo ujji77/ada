@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 import { api } from '../../../services/api';
+import SortToggleButton from '../../../components/shared/SortToggleButton';
 
 const CustomBarLabel = ({ x, y, width, value }) => {
   const formattedValue = new Intl.NumberFormat().format(value);
-  const minWidthForInternalLabel = 70; // Adjust this threshold as needed
-  
+  const minWidthForInternalLabel = 70;
   const isLabelInternal = width > minWidthForInternalLabel;
   
   return (
@@ -24,24 +24,29 @@ const CustomBarLabel = ({ x, y, width, value }) => {
 const FilterBarChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortByValue, setSortByValue] = useState(true);
+  const [rawData, setRawData] = useState(null);
+
+  const transformData = (responseData, useValue) => {
+    return responseData
+      .filter(row => row.isGroup)
+      .map(item => ({
+        day: item.day.slice(0, 3),
+        value: useValue ? item.volume : item.journal_count
+      }))
+      .sort((a, b) => {
+        const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
+      });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const responseData = await api.getADA5AMain();
-        // Filter summary rows and transform data
-        const summaryData = responseData
-          .filter(row => row.isGroup)
-          .map(item => ({
-            day: item.day.slice(0, 3), // Get first 3 letters of day
-            volume: item.volume
-          }))
-          .sort((a, b) => {
-            // Custom sort order for days
-            const dayOrder = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-            return dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day);
-          });
-        setData(summaryData);
+        setRawData(responseData);
+        const transformedData = transformData(responseData, sortByValue);
+        setData(transformedData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -50,6 +55,17 @@ const FilterBarChart = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (rawData) {
+      const transformedData = transformData(rawData, sortByValue);
+      setData(transformedData);
+    }
+  }, [sortByValue, rawData]);
+
+  const handleToggleSort = () => {
+    setSortByValue(prev => !prev);
+  };
 
   if (loading) return <div>Loading chart data...</div>;
 
@@ -61,19 +77,24 @@ const FilterBarChart = () => {
         gap: '8px',
         marginBottom: '16px',
       }}>
-        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Value</h3>
+        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 'bold' }}>
+          {sortByValue ? 'Value' : 'Number of Journals'}
+        </h3>
         <span style={{ 
           color: '#666',
           cursor: 'help',
           fontSize: '14px'
         }}>ⓘ</span>
+        <div style={{ marginLeft: 'auto' }}>
+          <SortToggleButton sortByValue={sortByValue} handleToggleSort={handleToggleSort} />
+        </div>
       </div>
       <BarChart
         width={600}
         height={300}
         data={data}
         layout="vertical"
-        margin={{ top: 5, right: 100, left: 40, bottom: 5 }} // Increased right margin for external labels
+        margin={{ top: 5, right: 100, left: 40, bottom: 5 }}
       >
         <XAxis
           type="number"
@@ -103,7 +124,7 @@ const FilterBarChart = () => {
           cursor={false}
         />
         <Bar
-          dataKey="volume"
+          dataKey="value"
           fill="#C84C0C"
           radius={[0, 4, 4, 0]}
           barSize={20}
